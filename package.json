@@ -1,0 +1,21 @@
+{
+    "name": "com.onairxr.server",
+    "version": "0.1.0",
+    "displayName": "onAirXR Server XR Plugin",
+    "description": "none",
+    "unity": "2020.1",
+    "author": {
+        "name": "Clicked, Inc.",
+        "email": "contact@clicked.co.kr",
+        "url": "https://www.clicked.co.kr"
+    },
+    "keywords": [
+        "vr",
+        "xr",
+        "reality",
+        "xreditorsubsystem"
+    ],
+    "dependencies": {
+        "com.unity.xr.management": "4.0.1"
+    }
+}

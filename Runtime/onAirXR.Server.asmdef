@@ -1,0 +1,14 @@
+{
+    "name": "onAirXR.Server",
+    "references": [
+        "Unity.XR.Management"
+    ],
+    "optionalUnityReference": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReference": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

@@ -1,0 +1,12 @@
+{
+    "name": "onAirXR Server",
+    "version": "0.1.0",
+    "libraryName": "axr",
+    "displays": [{
+        "id": "onAirXR Display",
+        "supportedMirrorBlitReservedModes": ["leftEye", "rightEye", "sideBySide", "none"]
+    }],
+    "inputs": [{
+        "id": "onAirXR Input"
+    }]
+}
