@@ -13,6 +13,7 @@ namespace onAirXR.Server {
 
         [DllImport(LibName)] private extern static bool axr_peekMessage(out IntPtr source, out IntPtr data, out int length);
         [DllImport(LibName)] private extern static void axr_popMessage();
+
         public static bool GetNextServerMessage(out AXRServerMessage message) {
             message = null;
 
@@ -28,5 +29,8 @@ namespace onAirXR.Server {
             message = AXRServerMessage.Parse(source, System.Text.Encoding.UTF8.GetString(array, 0, length));
             return true;
         }
+
+        [DllImport(LibName, EntryPoint = "axr_sendAudioFrame")]
+        public extern static void SendAudioFrame(float[] data, int sampleCount, int channels, double timestamp);
     }
 }

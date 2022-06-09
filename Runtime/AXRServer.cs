@@ -15,6 +15,8 @@ namespace onAirXR.Server {
             }
         }
 
+        private AXRAudioListener _currentAudioListener;
+
         public void Init() {
             AXRServerEventLoop.instance.RegisterListener(this);
         }
@@ -30,7 +32,18 @@ namespace onAirXR.Server {
             // TODO
         }
 
-        void AXRServerEventLoop.Listener.OnUpdate() {}
+        void AXRServerEventLoop.Listener.OnUpdate() {
+            if (_currentAudioListener != null) { return; }
+
+            var audioListener = Object.FindObjectOfType<AudioListener>(true);
+            if (audioListener == null) { return; }
+
+            _currentAudioListener = audioListener.GetComponent<AXRAudioListener>();
+            if (_currentAudioListener == null) {
+                _currentAudioListener = audioListener.gameObject.AddComponent<AXRAudioListener>();
+            }
+        }
+
         void AXRServerEventLoop.Listener.OnLateUpdate() {}
     }
 }
