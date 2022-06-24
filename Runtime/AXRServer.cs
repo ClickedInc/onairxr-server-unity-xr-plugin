@@ -29,7 +29,7 @@ namespace onAirXR.Server {
         void AXRServerEventLoop.Listener.OnMessageReceived(AXRServerMessage message) {
             var playerID = message.source.ToInt32();
 
-            // TODO
+            // nothing to do for now
         }
 
         void AXRServerEventLoop.Listener.OnUpdate() {

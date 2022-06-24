@@ -22,6 +22,8 @@ namespace onAirXR.Server {
             var settings = AXRServerSettings.instance;
             configure(settings);
 
+            AXRServerPlugin.SetRecordSettings(settings.propRecordVideo, settings.GenerateRecordVideoOutPathWithoutExtension(), (int)settings.propRecordFormat);
+
             StartSubsystem<XRDisplaySubsystem>();
             StartSubsystem<XRInputSubsystem>();
 
