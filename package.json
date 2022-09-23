@@ -1,8 +1,8 @@
 {
     "name": "com.onairxr.server",
-    "version": "0.1.0",
+    "version": "2.6.0",
     "displayName": "onAirXR Server XR Plugin",
-    "description": "none",
+    "description": "",
     "unity": "2020.1",
     "author": {
         "name": "Clicked, Inc.",
@@ -16,6 +16,6 @@
         "xreditorsubsystem"
     ],
     "dependencies": {
-        "com.unity.xr.management": "4.0.1"
+        "com.unity.xr.management": "4.2.0"
     }
 }

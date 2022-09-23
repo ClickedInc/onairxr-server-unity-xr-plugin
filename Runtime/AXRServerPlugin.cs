@@ -20,10 +20,7 @@ namespace onAirXR.Server {
         public static bool GetNextServerMessage(out AXRServerMessage message) {
             message = null;
 
-            IntPtr source, data;
-            int length;
-
-            if (axr_peekMessage(out source, out data, out length) == false) { return false; }
+            if (axr_peekMessage(out IntPtr source, out IntPtr data, out int length) == false) { return false; }
 
             var array = new byte[length];
             Marshal.Copy(data, array, 0, length);
@@ -35,5 +32,19 @@ namespace onAirXR.Server {
 
         [DllImport(LibName, EntryPoint = "axr_sendAudioFrame")]
         public extern static void SendAudioFrame(float[] data, int sampleCount, int channels, double timestamp);
+
+        [DllImport(LibName, EntryPoint = "axr_isOnStreaming")]
+        public extern static bool IsOnStreaming(int playerID);
+
+        [DllImport(LibName)] private extern static bool axr_getConfig(int playerID, out IntPtr data, out int length);
+
+        public static AXRPlayerConfig GetConfig(int playerID) {
+            if (axr_getConfig(playerID, out IntPtr data, out int length) == false) { return null; }
+
+            var array = new byte[length];
+            Marshal.Copy(data, array, 0, length);
+            var json = System.Text.Encoding.UTF8.GetString(array, 0, length);
+            return JsonUtility.FromJson<AXRPlayerConfig>(json);
+        }
     }
 }

@@ -81,7 +81,7 @@ namespace onAirXR.Server {
         public string propLicense {
             get {
                 if (Application.isEditor) {
-                    return Path.GetFullPath("Packages/com.onairxr.server/Runtime/Resources/noncommercial.license");
+                    return Path.GetFullPath("Packages/com.onairxr.server/Resources/noncommercial.license");
                 }
 
                 return string.IsNullOrEmpty(license) == false ? license : "noncommercial.license";
@@ -119,7 +119,8 @@ namespace onAirXR.Server {
             }
 
             foreach (string key in pairs.Keys) {
-                if (key.Equals("onairxr_stap_port")) {
+                if (key.Equals("onairvr_stap_port") || 
+                    key.Equals("onairxr_stap_port")) {
                     stapPort = AXRUtils.ParseInt(pairs[key], propStapPort,
                         (parsed) => {
                             return 0 <= parsed && parsed <= 65535;
@@ -128,7 +129,8 @@ namespace onAirXR.Server {
                             Debug.LogWarning("[onAirXR] WARNING: STAP Port number of the command line argument is invalid : " + val);
                         });
                 }
-                else if (key.Equals("onairxr_amp_port")) {
+                else if (key.Equals("onairvr_amp_port") || 
+                         key.Equals("onairxr_amp_port")) {
                     ampPort = AXRUtils.ParseInt(pairs[key], propAmpPort,
                         (parsed) => {
                             return 0 <= parsed && parsed <= 65535;
@@ -137,13 +139,16 @@ namespace onAirXR.Server {
                             Debug.LogWarning("[onAirXR] WARNING: AMP Port number of the command line argument is invalid : " + val);
                         });
                 }
-                else if (key.Equals("onairxr_loopback_only")) {
+                else if (key.Equals("onairvr_loopback_only") ||
+                         key.Equals("onairxr_loopback_only")) {
                     loopbackOnly = pairs[key].Equals("true");
                 }
-                else if (key.Equals("onairxr_license")) {
+                else if (key.Equals("onairvr_license") ||
+                         key.Equals("onairxr_license")) {
                     license = pairs[key];
                 }
-                else if (key.Equals("onairxr_min_frame_rate")) {
+                else if (key.Equals("onairvr_min_frame_rate") ||
+                         key.Equals("onairxr_min_frame_rate")) {
                     minFrameRate = AXRUtils.ParseInt(pairs[key], propMinFrameRate,
                         (parsed) => {
                             return parsed >= 0;
