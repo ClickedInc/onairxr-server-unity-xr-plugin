@@ -9,10 +9,7 @@ namespace onAirXR.Server {
         private const string LibName = "axr";
 
         [DllImport(LibName, EntryPoint = "axr_configure")] 
-        public extern static void Configure(string license, int portSTAP, int portAMP, bool loopbackOnlyForSTAP, float minFrameRate, float maxFrameRate, int audioSampleRate, int renderPass, int framebufferTextureColorSpaceHint);
-
-        [DllImport(LibName, EntryPoint = "axr_setRecordSettings")]
-        public extern static void SetRecordSettings(bool enable, string outputPathWithoutExtension, int outputFormat);
+        public extern static void Configure(string license, int portSTAP, int portAMP, bool loopbackOnlyForSTAP, float minFrameRate, float maxFrameRate, int audioSampleRate, int renderPass, int framebufferTextureColorSpaceHint, bool cpuReadableEncodeBuffer);
 
         [DllImport(LibName)] private extern static bool axr_peekMessage(out IntPtr source, out IntPtr data, out int length);
         [DllImport(LibName)] private extern static void axr_popMessage();
@@ -46,5 +43,41 @@ namespace onAirXR.Server {
             var json = System.Text.Encoding.UTF8.GetString(array, 0, length);
             return JsonUtility.FromJson<AXRPlayerConfig>(json);
         }
+
+        [DllImport(LibName, EntryPoint = "axr_isProfiling")]
+        public extern static bool IsProfiling(int playerID);
+
+        [DllImport(LibName, EntryPoint = "axr_isRecording")]
+        public extern static bool IsRecording(int playerID);
+
+        [DllImport(LibName, EntryPoint = "axr_requestConfigureSession")]
+        public extern static void RequestConfigureSession(int playerID, ulong minBitrate, ulong startBitrate, ulong maxBitrate);
+
+        [DllImport(LibName, EntryPoint = "axr_requestImportSessionData")]
+        public extern static void RequestImportSessionData(int playerID, string path);
+
+        [DllImport(LibName, EntryPoint = "axr_requestRecordSession")]
+        public extern static void RequestRecordSession(int playerID, string targetPath);
+
+        [DllImport(LibName, EntryPoint = "axr_recordVideo")]
+        public extern static void RecordVideo(int playerID, string outputPathWithoutExtension, int outputFormat, string sessionDataName);
+
+        [DllImport(LibName, EntryPoint = "axr_stopRecordVideo")]
+        public extern static void StopRecordVideo(int playerID);
+
+        [DllImport(LibName, EntryPoint = "axr_requestPlay")] 
+        public extern static void RequestPlay(int playerID, string sessionDataName);
+
+        [DllImport(LibName, EntryPoint = "axr_requestStop")] 
+        public extern static void RequestStop(int playerID);
+
+        [DllImport(LibName, EntryPoint = "axr_requestStartProfile")]
+        public extern static void RequestStartProfile(int playerID, string directory, string filename, string sessionDataName);
+
+        [DllImport(LibName, EntryPoint = "axr_requestStopProfile")]
+        public extern static void RequestStopProfile(int playerID);
+
+        [DllImport(LibName, EntryPoint = "axr_requestQuery")]
+        public extern static void RequestQuery(int playerID, string statement);
     }
 }

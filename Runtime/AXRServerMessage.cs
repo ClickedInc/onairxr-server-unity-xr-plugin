@@ -22,8 +22,8 @@ namespace onAirXR.Server {
         // Type : Event, From : Session
         public const string NameConnected = "Connected";
         public const string NameDisconnected = "Disconnected";
-        public const string NameProfilerFrame = "ProfilerFrame";
-        public const string NameProfilerReport = "ProfilerReport";
+        public const string NameProfileData = "ProfileData";
+        public const string NameQueryResponse = "QueryResponse";
 
         // Type : Event, From : Player
         public const string NameCreated = "Created";
@@ -57,17 +57,12 @@ namespace onAirXR.Server {
         public string From;
         public string Name;
 
-        // Type : Event, From : Session, Name : ProfilerFrame
-        public double OverallLatency;
-        public double NetworkLatency;
-        public double DecodeLatency;
+        // Type : Event, From : Session, Name : ProfileData
+        public string DataFilePath;
 
-        // Type : Event, From : Session, Name : ProfilerReport
-        public int FrameCount;
-        public double Duration;
-        public double AvgOverallLatency;
-        public double AvgNetworkLatency;
-        public double AvgDecodeLatency;
+        // Type : Event, From : Session, Name : QueryResponse
+        public string Statement;
+        public string Body;
 
         // Type : Event, From : InputStream, Name : RemoteInputDeviceRegistered / RemoteInputDeviceUnregistered
         public int DeviceID;

@@ -61,4 +61,11 @@ namespace onAirXR.Server {
             return new Quaternion(x, y, z, w);
         }
     }
+
+    public enum AXRRecordFormat {
+        MP4 = 0,
+        H264_HEVC,
+        Lossless,
+        Raw
+    }
 }

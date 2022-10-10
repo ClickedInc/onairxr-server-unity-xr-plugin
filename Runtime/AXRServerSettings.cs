@@ -26,12 +26,6 @@ namespace onAirXR.Server {
         Linear
     }
 
-    public enum AXRRecordFormat { 
-        MP4 = 0,
-        H264_HEVC,
-        Lossless
-    }
-
     [XRConfigurationData("onAirXR Server", SettingsKey)]
     public class AXRServerSettings : ScriptableObject {
         public const string SettingsKey = "com.onairxr.server.settings";
@@ -73,10 +67,7 @@ namespace onAirXR.Server {
         [SerializeField] private bool advancedSettingsEnabled = false;
         [SerializeField] private AXRRenderPass desiredRenderPass = AXRRenderPass.SinglePassInstanced;
         [SerializeField] private AXRTextureColorSpaceHint displayTextureColorSpaceHint = AXRTextureColorSpaceHint.None;
-        [SerializeField] private bool recordVideo = false;
-        [SerializeField] private string recordTargetFolder = "";
-        [SerializeField] private string recordName = "session";
-        [SerializeField] private AXRRecordFormat recordFormat = AXRRecordFormat.MP4;
+        [SerializeField] private bool cpuReadableEncodeBuffer = false;
 
         public string propLicense {
             get {
@@ -95,10 +86,7 @@ namespace onAirXR.Server {
         public bool propLoopbackOnly => loopbackOnly;
         public AXRRenderPass propDesiredRenderPass => advancedSettingsEnabled ? desiredRenderPass : AXRRenderPass.SinglePassInstanced;
         public AXRTextureColorSpaceHint propDisplayTextureColorSpaceHint => advancedSettingsEnabled ? displayTextureColorSpaceHint : AXRTextureColorSpaceHint.None;
-        public bool propRecordVideo => Application.isEditor && advancedSettingsEnabled && recordVideo;
-        public AXRRecordFormat propRecordFormat => recordFormat;
-
-        public string GenerateRecordVideoOutPathWithoutExtension() => Path.Combine(recordTargetFolder, $"{recordName}_{DateTime.Now:yyMMddHHmmss}");
+        public bool propCpuReadableEncodeBuffer => cpuReadableEncodeBuffer;
 
         public AXRServerSettings ParseCommandLine() {
             var pairs = AXRUtils.ParseCommandLine(Environment.GetCommandLineArgs());

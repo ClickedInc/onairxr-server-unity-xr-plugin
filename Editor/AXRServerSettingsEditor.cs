@@ -13,10 +13,7 @@ namespace onAirXR.Server {
         private SerializedProperty _propAdvancedSettingsEnabled;
         private SerializedProperty _propDesiredRenderPass;
         private SerializedProperty _propDisplayTextureColorSpaceHint;
-        private SerializedProperty _propRecordVideo;
-        private SerializedProperty _propRecordTargetFolder;
-        private SerializedProperty _propRecordName;
-        private SerializedProperty _propRecordFormat;
+        private SerializedProperty _propCpuReadableEncodeBuffer;
 
         private void OnEnable() {
             _propLicense = serializedObject.FindProperty("license");
@@ -26,10 +23,7 @@ namespace onAirXR.Server {
             _propAdvancedSettingsEnabled = serializedObject.FindProperty("advancedSettingsEnabled");
             _propDesiredRenderPass = serializedObject.FindProperty("desiredRenderPass");
             _propDisplayTextureColorSpaceHint = serializedObject.FindProperty("displayTextureColorSpaceHint");
-            _propRecordVideo = serializedObject.FindProperty("recordVideo");
-            _propRecordTargetFolder = serializedObject.FindProperty("recordTargetFolder");
-            _propRecordName = serializedObject.FindProperty("recordName");
-            _propRecordFormat = serializedObject.FindProperty("recordFormat");
+            _propCpuReadableEncodeBuffer = serializedObject.FindProperty("cpuReadableEncodeBuffer");
         }
 
         public override void OnInspectorGUI() {
@@ -53,19 +47,7 @@ namespace onAirXR.Server {
 
                     EditorGUILayout.PropertyField(_propDesiredRenderPass, Styles.labelDesiredRenderPass);
                     EditorGUILayout.PropertyField(_propDisplayTextureColorSpaceHint, Styles.labelDisplayTextureColorSpaceHint);
-
-                    EditorGUILayout.Space();
-                    
-                    EditorGUILayout.PropertyField(_propRecordVideo, Styles.labelRecordVideo);
-                    if (_propRecordVideo.boolValue) {
-                        EditorGUILayout.BeginVertical("Box");
-
-                        EditorGUILayout.PropertyField(_propRecordTargetFolder, Styles.labelRecordTargetFolder);
-                        EditorGUILayout.PropertyField(_propRecordName, Styles.labelRecordName);
-                        EditorGUILayout.PropertyField(_propRecordFormat, Styles.labelRecordFormat);
-
-                        EditorGUILayout.EndVertical();
-                    }
+                    EditorGUILayout.PropertyField(_propCpuReadableEncodeBuffer, Styles.labelCpuReadableEncodeBuffer);
                 }
             }
             EditorGUILayout.EndVertical();
@@ -84,11 +66,7 @@ namespace onAirXR.Server {
             public static GUIContent labelAdvancedSettingsEnabled = new GUIContent("Advanced Settings");
             public static GUIContent labelDesiredRenderPass = new GUIContent("Desired Render Pass");
             public static GUIContent labelDisplayTextureColorSpaceHint = new GUIContent("Display Texture Color Space Hint");
-
-            public static GUIContent labelRecordVideo = new GUIContent("Record Video (experimental, editor only)");
-            public static GUIContent labelRecordTargetFolder = new GUIContent("Target Folder");
-            public static GUIContent labelRecordName = new GUIContent("Name");
-            public static GUIContent labelRecordFormat = new GUIContent("Format");
+            public static GUIContent labelCpuReadableEncodeBuffer = new GUIContent("CPU Readable Encode Buffer");
         }
     }
 }

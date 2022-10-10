@@ -12,6 +12,8 @@ namespace onAirXR.Server {
             void OnDeactivate();
             void OnDisconnect();
             void OnUserdataReceived(byte[] data);
+            void OnProfileDataReceived(string path);
+            void OnQueryResponseReceived(string statement, string body);
         }
 
         private static AXRServer _instance;
@@ -31,7 +33,10 @@ namespace onAirXR.Server {
 
         public AXRServerInput input { get; private set; }
         public AXRPlayerConfig config { get; private set; }
-        public bool isOnStreaming => _playerID >= 0 && AXRServerPlugin.IsOnStreaming(_playerID);
+        public bool connected => _playerID > InvalidPlayerID;
+        public bool isOnStreaming => connected && AXRServerPlugin.IsOnStreaming(_playerID);
+        public bool isProfiling => connected && AXRServerPlugin.IsProfiling(_playerID);
+        public bool isRecording => connected && AXRServerPlugin.IsRecording(_playerID);
 
         public void Init() {
             input = new AXRServerInput();
@@ -57,6 +62,66 @@ namespace onAirXR.Server {
             _eventHandlers.Remove(handler);
         }
 
+        public void RequestConfigureSession(ulong minBitrate, ulong startBitrate, ulong maxBitrate) {
+            if (connected == false) { return; }
+
+            AXRServerPlugin.RequestConfigureSession(_playerID, minBitrate, startBitrate, maxBitrate);
+        }
+
+        public void RequestImportSessionData(string path) {
+            if (connected == false) { return; }
+
+            AXRServerPlugin.RequestImportSessionData(_playerID, path);
+        }
+
+        public void RequestRecordSession(string path) {
+            if (connected == false) { return; }
+
+            AXRServerPlugin.RequestRecordSession(_playerID, path);
+        }
+
+        public void RecordVideo(string outputPathWithoutExt, AXRRecordFormat outputFormat, string sessionDataName = null) {
+            if (connected == false) { return; }
+
+            AXRServerPlugin.RecordVideo(_playerID, outputPathWithoutExt, (int)outputFormat, string.IsNullOrEmpty(sessionDataName) == false ? sessionDataName : null);
+        }
+
+        public void StopRecordVideo() {
+            if (connected == false) { return; }
+
+            AXRServerPlugin.StopRecordVideo(_playerID);
+        }
+
+        public void RequestPlay(string sessionDataName = null) {
+            if (connected == false) { return; }
+
+            AXRServerPlugin.RequestPlay(_playerID, string.IsNullOrEmpty(sessionDataName) == false ? sessionDataName : null);
+        }
+
+        public void RequestStop() {
+            if (connected == false) { return; }
+
+            AXRServerPlugin.RequestStop(_playerID);
+        }
+
+        public void RequestStartProfile(string directory, string filename, string sessionDataName = null) {
+            if (connected == false) { return; }
+
+            AXRServerPlugin.RequestStartProfile(_playerID, directory, filename, sessionDataName);
+        }
+
+        public void RequestStopProfile() {
+            if (connected == false) { return; }
+
+            AXRServerPlugin.RequestStopProfile(_playerID);
+        }
+
+        public void RequestQuery(string statement) {
+            if (connected == false) { return; }
+
+            AXRServerPlugin.RequestQuery(_playerID, statement);
+        }
+
         // implements AXRServerEventLoop.Listener
         void AXRServerEventLoop.Listener.OnMessageReceived(AXRServerMessage message) {
             var playerID = message.source.ToInt32();
@@ -67,6 +132,12 @@ namespace onAirXR.Server {
                 }
                 else if (message.Name.Equals(AXRServerMessage.NameDisconnected)) {
                     _playerID = InvalidPlayerID;
+                }
+                else if (message.Name.Equals(AXRServerMessage.NameProfileData)) {
+                    onProfileDataReceived(message);
+                }
+                else if (message.Name.Equals(AXRServerMessage.NameQueryResponse)) {
+                    onQueryResponseReceived(message);
                 }
             }
             if (_playerID == InvalidPlayerID || playerID != _playerID) { return; }
@@ -127,6 +198,18 @@ namespace onAirXR.Server {
         private void onUserdataReceived(AXRServerMessage message) {
             foreach (var handler in _eventHandlers) {
                 handler.OnUserdataReceived(message.Data_Decoded);
+            }
+        }
+
+        private void onProfileDataReceived(AXRServerMessage message) {
+            foreach (var handler in _eventHandlers) {
+                handler.OnProfileDataReceived(message.DataFilePath);
+            }
+        }
+
+        private void onQueryResponseReceived(AXRServerMessage message) {
+            foreach (var handler in _eventHandlers) {
+                handler.OnQueryResponseReceived(message.Statement, message.Body);
             }
         }
 

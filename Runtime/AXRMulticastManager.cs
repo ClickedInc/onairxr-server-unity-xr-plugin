@@ -193,6 +193,8 @@ namespace onAirXR.Server {
             var ret = (ErrorCode)ocs_MulticastStartup(_address, _port, _netaddr);
             if (ret != ErrorCode.NoError) {
                 Debug.LogWarningFormat("[WARNING] failed to startup OCSMulticastManager : {0}", ret);
+                
+                ocs_MulticastShutdown();
                 return;
             }
 

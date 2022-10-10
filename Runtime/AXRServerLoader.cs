@@ -22,8 +22,6 @@ namespace onAirXR.Server {
             var settings = AXRServerSettings.instance;
             configure(settings);
 
-            AXRServerPlugin.SetRecordSettings(settings.propRecordVideo, settings.GenerateRecordVideoOutPathWithoutExtension(), (int)settings.propRecordFormat);
-
             StartSubsystem<XRDisplaySubsystem>();
             StartSubsystem<XRInputSubsystem>();
 
@@ -73,7 +71,8 @@ namespace onAirXR.Server {
                                       120,
                                       AudioSettings.outputSampleRate,
                                       (int)settings.propDesiredRenderPass,
-                                      (int)settings.propDisplayTextureColorSpaceHint);
+                                      (int)settings.propDisplayTextureColorSpaceHint,
+                                      settings.propCpuReadableEncodeBuffer);
         }
     }
 }
