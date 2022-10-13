@@ -26,6 +26,7 @@ namespace onAirXR.Server {
         Linear
     }
 
+    [Serializable]
     [XRConfigurationData("onAirXR Server", SettingsKey)]
     public class AXRServerSettings : ScriptableObject {
         public const string SettingsKey = "com.onairxr.server.settings";
@@ -45,9 +46,9 @@ namespace onAirXR.Server {
         }
 #else
         public static AXRServerSettings runtimeInstance { get; private set; } = null;
-        public static AXRServerSettings instance => runtimeInstance ?? new AXRServerSettings();
+        public static AXRServerSettings instance => runtimeInstance;
 
-        private void OnEnable() {
+        public void Awake() {
             if (runtimeInstance != null) { return; }
 
             ParseCommandLine();
