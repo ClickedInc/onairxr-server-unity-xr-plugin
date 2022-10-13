@@ -9,7 +9,19 @@ namespace onAirXR.Server {
         private const string LibName = "axr";
 
         [DllImport(LibName, EntryPoint = "axr_configure")] 
-        public extern static void Configure(string license, int portSTAP, int portAMP, bool loopbackOnlyForSTAP, float minFrameRate, float maxFrameRate, int audioSampleRate, int renderPass, int framebufferTextureColorSpaceHint, bool cpuReadableEncodeBuffer);
+        public extern static void Configure(string license, 
+                                            int portSTAP, 
+                                            int portAMP, 
+                                            bool loopbackOnlyForSTAP, 
+                                            float minFrameRate, 
+                                            float maxFrameRate, 
+                                            int audioSampleRate, 
+                                            int renderPass, 
+                                            int framebufferTextureColorSpaceHint, 
+                                            bool cpuReadableEncodeBuffer,
+                                            int codecs,
+                                            int encodingPreset,
+                                            int encodingPerformance);
 
         [DllImport(LibName)] private extern static bool axr_peekMessage(out IntPtr source, out IntPtr data, out int length);
         [DllImport(LibName)] private extern static void axr_popMessage();

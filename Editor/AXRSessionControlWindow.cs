@@ -308,7 +308,7 @@ namespace onAirXR.Server {
 
                 if (pressed == false) { return value; }
 
-                var selected = EditorUtility.OpenFilePanel(dialogTitle, string.IsNullOrEmpty(value) == false ? Path.GetDirectoryName(value) : value, extension);
+                var selected = EditorUtility.OpenFilePanel(dialogTitle, string.IsNullOrEmpty(value) == false ? getDirectoryName(value) : value, extension);
                 return string.IsNullOrEmpty(selected) == false ? selected : value;
             }
 
@@ -328,11 +328,29 @@ namespace onAirXR.Server {
 
                 if (pressed == false) { return value; }
 
-                var selected = EditorUtility.SaveFilePanel(dialogTitle, Path.GetDirectoryName(value), Path.GetFileNameWithoutExtension(value), extension);
+                var selected = EditorUtility.SaveFilePanel(dialogTitle, getDirectoryName(value), getFilenameWithoutExtension(value), extension);
                 return string.IsNullOrEmpty(selected) == false ? selected : value;
             }
             
             private ulong mbpsToBps(float mbps) => (ulong)(mbps * 1000UL * 1000UL);
+
+            private string getDirectoryName(string value) {
+                try {
+                    return Path.GetDirectoryName(value);
+                }
+                catch {
+                    return "";
+                }
+            }
+
+            private string getFilenameWithoutExtension(string value) {
+                try {
+                    return Path.GetFileNameWithoutExtension(value);
+                }
+                catch {
+                    return "";
+                }
+            }
         }
 
         private class Styles {

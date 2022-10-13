@@ -72,7 +72,10 @@ namespace onAirXR.Server {
                                       AudioSettings.outputSampleRate,
                                       (int)settings.propDesiredRenderPass,
                                       (int)settings.propDisplayTextureColorSpaceHint,
-                                      settings.propCpuReadableEncodeBuffer);
+                                      settings.propCpuReadableEncodeBuffer,
+                                      (int)settings.propCodecs,
+                                      (int)settings.propEncodingPreset,
+                                      (int)settings.propEncodingPerformance);
         }
     }
 }

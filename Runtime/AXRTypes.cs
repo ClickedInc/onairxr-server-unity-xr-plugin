@@ -68,4 +68,23 @@ namespace onAirXR.Server {
         Lossless,
         Raw
     }
+
+    public enum AXRCodec { 
+        H264 = 0x1,
+        H265 = 0x2,
+        All = 0x3
+    }
+
+    public enum AXREncodingPreset { 
+        LowLatency = 1,
+        UltraLowLatency = 2
+    }
+
+    public enum AXREncodingPerformance { 
+        VeryHigh = 0,
+        High,
+        Moderate,
+        Low,
+        VeryLow
+    }
 }

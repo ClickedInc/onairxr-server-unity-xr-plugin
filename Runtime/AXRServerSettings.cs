@@ -68,6 +68,9 @@ namespace onAirXR.Server {
         [SerializeField] private AXRRenderPass desiredRenderPass = AXRRenderPass.SinglePassInstanced;
         [SerializeField] private AXRTextureColorSpaceHint displayTextureColorSpaceHint = AXRTextureColorSpaceHint.None;
         [SerializeField] private bool cpuReadableEncodeBuffer = false;
+        [SerializeField] private AXRCodec codecs = AXRCodec.All;
+        [SerializeField] private AXREncodingPreset encodingPreset = AXREncodingPreset.UltraLowLatency;
+        [SerializeField] private AXREncodingPerformance encodingPerformance = AXREncodingPerformance.VeryLow;
 
         public string propLicense {
             get {
@@ -87,6 +90,9 @@ namespace onAirXR.Server {
         public AXRRenderPass propDesiredRenderPass => advancedSettingsEnabled ? desiredRenderPass : AXRRenderPass.SinglePassInstanced;
         public AXRTextureColorSpaceHint propDisplayTextureColorSpaceHint => advancedSettingsEnabled ? displayTextureColorSpaceHint : AXRTextureColorSpaceHint.None;
         public bool propCpuReadableEncodeBuffer => cpuReadableEncodeBuffer;
+        public AXRCodec propCodecs => advancedSettingsEnabled ? codecs : AXRCodec.All;
+        public AXREncodingPreset propEncodingPreset => advancedSettingsEnabled ? encodingPreset : AXREncodingPreset.UltraLowLatency;
+        public AXREncodingPerformance propEncodingPerformance => advancedSettingsEnabled ? encodingPerformance : AXREncodingPerformance.VeryLow;
 
         public AXRServerSettings ParseCommandLine() {
             var pairs = AXRUtils.ParseCommandLine(Environment.GetCommandLineArgs());

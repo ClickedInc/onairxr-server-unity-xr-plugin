@@ -14,6 +14,9 @@ namespace onAirXR.Server {
         private SerializedProperty _propDesiredRenderPass;
         private SerializedProperty _propDisplayTextureColorSpaceHint;
         private SerializedProperty _propCpuReadableEncodeBuffer;
+        private SerializedProperty _propCodecs;
+        private SerializedProperty _propEncodingPreset;
+        private SerializedProperty _propEncodingPerformance;
 
         private void OnEnable() {
             _propLicense = serializedObject.FindProperty("license");
@@ -24,6 +27,9 @@ namespace onAirXR.Server {
             _propDesiredRenderPass = serializedObject.FindProperty("desiredRenderPass");
             _propDisplayTextureColorSpaceHint = serializedObject.FindProperty("displayTextureColorSpaceHint");
             _propCpuReadableEncodeBuffer = serializedObject.FindProperty("cpuReadableEncodeBuffer");
+            _propCodecs = serializedObject.FindProperty("codecs");
+            _propEncodingPreset = serializedObject.FindProperty("encodingPreset");
+            _propEncodingPerformance = serializedObject.FindProperty("encodingPerformance");
         }
 
         public override void OnInspectorGUI() {
@@ -48,6 +54,9 @@ namespace onAirXR.Server {
                     EditorGUILayout.PropertyField(_propDesiredRenderPass, Styles.labelDesiredRenderPass);
                     EditorGUILayout.PropertyField(_propDisplayTextureColorSpaceHint, Styles.labelDisplayTextureColorSpaceHint);
                     EditorGUILayout.PropertyField(_propCpuReadableEncodeBuffer, Styles.labelCpuReadableEncodeBuffer);
+                    EditorGUILayout.PropertyField(_propCodecs, Styles.labelCodecs);
+                    EditorGUILayout.PropertyField(_propEncodingPreset, Styles.labelEncodingPreset);
+                    EditorGUILayout.PropertyField(_propEncodingPerformance, Styles.labelEncodingPerformance);
                 }
             }
             EditorGUILayout.EndVertical();
@@ -67,6 +76,9 @@ namespace onAirXR.Server {
             public static GUIContent labelDesiredRenderPass = new GUIContent("Desired Render Pass");
             public static GUIContent labelDisplayTextureColorSpaceHint = new GUIContent("Display Texture Color Space Hint");
             public static GUIContent labelCpuReadableEncodeBuffer = new GUIContent("CPU Readable Encode Buffer");
+            public static GUIContent labelCodecs = new GUIContent("Codecs");
+            public static GUIContent labelEncodingPreset = new GUIContent("Encoding Preset");
+            public static GUIContent labelEncodingPerformance = new GUIContent("Encoding Performance");
         }
     }
 }
