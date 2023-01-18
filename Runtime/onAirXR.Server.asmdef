@@ -1,7 +1,8 @@
 {
     "name": "onAirXR.Server",
     "references": [
-        "Unity.XR.Management"
+        "Unity.XR.Management",
+        "Unity.InputSystem"
     ],
     "optionalUnityReference": [],
     "includePlatforms": [],
@@ -10,5 +11,10 @@
     "overrideReference": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": [{
+        "name": "com.unity.inputsystem",
+        "expression": "",
+        "define": "UNITY_INPUT_SYSTEM"
+    }]
 }
