@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace onAirXR.Server {
-    public class AXRServer : AXRServerEventLoop.Listener {
+    public class AXRServer : MonoBehaviour {
         private const int InvalidPlayerID = -1;
+        private const float MaxFramerate = 120f;
 
         public interface EventHandler {
             void OnConnect(AXRPlayerConfig config);
@@ -13,6 +14,7 @@ namespace onAirXR.Server {
             void OnDisconnect();
             void OnUserdataReceived(byte[] data);
             void OnProfileDataReceived(string path);
+            void OnProfileReportReceived(string report);
             void OnQueryResponseReceived(string statement, string body);
         }
 
@@ -21,7 +23,11 @@ namespace onAirXR.Server {
         public static AXRServer instance {
             get {
                 if (_instance == null) {
-                    _instance = new AXRServer();
+                    var go = new GameObject("AXRServer");
+                    go.hideFlags = HideFlags.HideAndDontSave;
+                    DontDestroyOnLoad(go);
+
+                    _instance = go.AddComponent<AXRServer>();
                 }
                 return _instance;
             }
@@ -38,16 +44,12 @@ namespace onAirXR.Server {
         public bool isProfiling => connected && AXRServerPlugin.IsProfiling(_playerID);
         public bool isRecording => connected && AXRServerPlugin.IsRecording(_playerID);
 
-        public void Init() {
-            input = new AXRServerInput();
-
-            AXRServerEventLoop.instance.RegisterListener(this);
+        public void LoadOnce() {
+            // do nothing. just to instantiate
         }
 
-        public void Cleanup() {
-            AXRServerEventLoop.instance.UnregisterListener(this);
-
-            input = null;
+        public void Reconfigure(AXRServerSettings settings) {
+            configure(settings);
         }
 
         public void RegisterEventHandler(EventHandler handler) {
@@ -80,10 +82,10 @@ namespace onAirXR.Server {
             AXRServerPlugin.RequestRecordSession(_playerID, path);
         }
 
-        public void RecordVideo(string outputPathWithoutExt, AXRRecordFormat outputFormat, string sessionDataName = null) {
+        public void StartRecordVideo(string outputPathWithoutExt, AXRRecordFormat outputFormat, string sessionDataName = null) {
             if (connected == false) { return; }
 
-            AXRServerPlugin.RecordVideo(_playerID, outputPathWithoutExt, (int)outputFormat, string.IsNullOrEmpty(sessionDataName) == false ? sessionDataName : null);
+            AXRServerPlugin.StartRecordVideo(_playerID, outputPathWithoutExt, (int)outputFormat, string.IsNullOrEmpty(sessionDataName) == false ? sessionDataName : null);
         }
 
         public void StopRecordVideo() {
@@ -122,54 +124,99 @@ namespace onAirXR.Server {
             AXRServerPlugin.RequestQuery(_playerID, statement);
         }
 
-        // implements AXRServerEventLoop.Listener
-        void AXRServerEventLoop.Listener.OnMessageReceived(AXRServerMessage message) {
-            var playerID = message.source.ToInt32();
+        private void Awake() {
+            input = new AXRServerInput();
+        }
 
-            if (message.IsSessionEvent()) {
-                if (message.Name.Equals(AXRServerMessage.NameConnected)) {
-                    _playerID = playerID;
-                }
-                else if (message.Name.Equals(AXRServerMessage.NameDisconnected)) {
-                    _playerID = InvalidPlayerID;
-                }
-                else if (message.Name.Equals(AXRServerMessage.NameProfileData)) {
-                    onProfileDataReceived(message);
-                }
-                else if (message.Name.Equals(AXRServerMessage.NameQueryResponse)) {
-                    onQueryResponseReceived(message);
-                }
-            }
-            if (_playerID == InvalidPlayerID || playerID != _playerID) { return; }
+        private void Start() {
+            var settings = AXRServerSettings.instance;
 
-            if (message.IsPlayerEvent()) {
-                if (message.Name.Equals(AXRServerMessage.NameCreated)) {
-                    config = AXRServerPlugin.GetConfig(_playerID);
+            configure(settings);
+            var ret = AXRServerPlugin.Startup(settings.propLicense, settings.propStapPort, settings.propAmpPort, settings.propLoopbackOnly);
+            if (ret != 0) {
+                var reason = ret == -1 ? "not verified yet" :
+                             ret == -2 ? "file not found" :
+                             ret == -3 ? "invalid license" :
+                             ret == -4 ? "license expired" :
+                                         $"system error (code = {ret})";
 
-                    notifyConnected(config);
-                }
-                else if (message.Name.Equals(AXRServerMessage.NameActivated)) {
-                    notifyActivated();
-                }
-                else if (message.Name.Equals(AXRServerMessage.NameDeactivated)) {
-                    notifyDeactivated();
-                }
-                else if (message.Name.Equals(AXRServerMessage.NameDisconnected)) {
-                    notifyDisconnected();
-
-                    config = null;
-                }
-            }
-            else if (message.Type.Equals(AXRMessage.TypeUserData)) {
-                onUserdataReceived(message);
+                Debug.LogError($"[onAirXR Server] failed to start up server: code = {reason}");
             }
         }
 
-        void AXRServerEventLoop.Listener.OnUpdate() {
+        private void Update() {
+            processServerMessages();
             ensureAudioListenerConfigured();
         }
 
-        void AXRServerEventLoop.Listener.OnLateUpdate() {}
+        private void OnApplicationQuit() {
+            if (_instance != null) {
+                Destroy(_instance.gameObject);
+            }
+        }
+
+        private void OnDestroy() {
+            AXRServerPlugin.Shutdown();
+        }
+
+        private void configure(AXRServerSettings settings) {
+            AXRServerPlugin.Configure(settings.propMinFrameRate,
+                                      MaxFramerate,
+                                      AudioSettings.outputSampleRate,
+                                      (int)settings.propDesiredRenderPass,
+                                      (int)settings.propDisplayTextureColorSpaceHint,
+                                      settings.propCpuReadableEncodeBuffer,
+                                      (int)settings.propCodecs,
+                                      (int)settings.propEncodingPreset,
+                                      (int)settings.propEncodingPerformance);
+        }
+
+        private void processServerMessages() {
+            while (AXRServerPlugin.GetNextServerMessage(out AXRServerMessage message)) {
+                var playerID = message.source.ToInt32();
+
+                if (message.IsSessionEvent()) {
+                    if (message.Name.Equals(AXRServerMessage.NameConnected)) {
+                        _playerID = playerID;
+                    }
+                    else if (message.Name.Equals(AXRServerMessage.NameDisconnected)) {
+                        _playerID = InvalidPlayerID;
+                    }
+                    else if (message.Name.Equals(AXRServerMessage.NameProfileData)) {
+                        onProfileDataReceived(message);
+                    }
+                    else if (message.Name.Equals(AXRServerMessage.NameProfileReport)) {
+                        onProfileReportReceived(message);
+                    }
+                    else if (message.Name.Equals(AXRServerMessage.NameQueryResponse)) {
+                        onQueryResponseReceived(message);
+                    }
+                }
+                if (_playerID == InvalidPlayerID || playerID != _playerID) { continue; }
+
+                if (message.IsPlayerEvent()) {
+                    if (message.Name.Equals(AXRServerMessage.NameCreated)) {
+                        config = AXRServerPlugin.GetConfig(_playerID);
+
+                        notifyConnected(config);
+                    }
+                    else if (message.Name.Equals(AXRServerMessage.NameActivated)) {
+                        notifyActivated();
+                    }
+                    else if (message.Name.Equals(AXRServerMessage.NameDeactivated)) {
+                        notifyDeactivated();
+                    }
+                    else if (message.Name.Equals(AXRServerMessage.NameDestroyed)) {
+                        config = null;
+
+                        notifyDisconnected();
+                    }
+                }
+                else if (message.Type.Equals(AXRMessage.TypeUserData)) {
+                    onUserdataReceived(message);
+                }
+            }
+        }
 
         private void notifyConnected(AXRPlayerConfig config) {
             foreach (var handler in _eventHandlers) {
@@ -204,6 +251,12 @@ namespace onAirXR.Server {
         private void onProfileDataReceived(AXRServerMessage message) {
             foreach (var handler in _eventHandlers) {
                 handler.OnProfileDataReceived(message.DataFilePath);
+            }
+        }
+
+        private void onProfileReportReceived(AXRServerMessage message) {
+            foreach (var handler in _eventHandlers) {
+                handler.OnProfileReportReceived(message.Body);
             }
         }
 

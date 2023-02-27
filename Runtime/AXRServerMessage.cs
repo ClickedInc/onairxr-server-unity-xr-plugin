@@ -23,6 +23,7 @@ namespace onAirXR.Server {
         public const string NameConnected = "Connected";
         public const string NameDisconnected = "Disconnected";
         public const string NameProfileData = "ProfileData";
+        public const string NameProfileReport = "ProfileReport";
         public const string NameQueryResponse = "QueryResponse";
 
         // Type : Event, From : Player
@@ -60,9 +61,11 @@ namespace onAirXR.Server {
         // Type : Event, From : Session, Name : ProfileData
         public string DataFilePath;
 
+        // Type : Event, From : Session, Name : QueryResponse, ProfileReport
+        public string Body;
+
         // Type : Event, From : Session, Name : QueryResponse
         public string Statement;
-        public string Body;
 
         // Type : Event, From : InputStream, Name : RemoteInputDeviceRegistered / RemoteInputDeviceUnregistered
         public int DeviceID;

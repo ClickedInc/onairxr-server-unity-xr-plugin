@@ -50,8 +50,7 @@ namespace onAirXR.Server {
             InputLayoutLoader.RegisterInputLayouts();
 #endif
 
-            AXRServer.instance.Init();
-            configure(AXRServerSettings.instance);
+            AXRServer.instance.LoadOnce();
 
             CreateSubsystem<XRDisplaySubsystemDescriptor, XRDisplaySubsystem>(_displaySubsystemDescriptors, "onAirXR Display");
             CreateSubsystem<XRInputSubsystemDescriptor, XRInputSubsystem>(_inputSubsystemDescriptors, "onAirXR Input");
@@ -60,7 +59,7 @@ namespace onAirXR.Server {
 
         public override bool Start() {
             var settings = AXRServerSettings.instance;
-            configure(settings);
+            AXRServer.instance.Reconfigure(settings);
 
             StartSubsystem<XRDisplaySubsystem>();
             StartSubsystem<XRInputSubsystem>();
@@ -98,24 +97,7 @@ namespace onAirXR.Server {
             DestroySubsystem<XRDisplaySubsystem>();
             DestroySubsystem<XRInputSubsystem>();
 
-            AXRServer.instance.Cleanup();
             return true;
-        }
-
-        private void configure(AXRServerSettings settings) {
-            AXRServerPlugin.Configure(settings.propLicense,
-                                      settings.propStapPort,
-                                      settings.propAmpPort,
-                                      settings.propLoopbackOnly,
-                                      settings.propMinFrameRate,
-                                      120,
-                                      AudioSettings.outputSampleRate,
-                                      (int)settings.propDesiredRenderPass,
-                                      (int)settings.propDisplayTextureColorSpaceHint,
-                                      settings.propCpuReadableEncodeBuffer,
-                                      (int)settings.propCodecs,
-                                      (int)settings.propEncodingPreset,
-                                      (int)settings.propEncodingPerformance);
         }
     }
 }

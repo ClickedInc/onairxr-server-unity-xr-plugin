@@ -9,11 +9,7 @@ namespace onAirXR.Server {
         private const string LibName = "axr";
 
         [DllImport(LibName, EntryPoint = "axr_configure")] 
-        public extern static void Configure(string license, 
-                                            int portSTAP, 
-                                            int portAMP, 
-                                            bool loopbackOnlyForSTAP, 
-                                            float minFrameRate, 
+        public extern static bool Configure(float minFrameRate, 
                                             float maxFrameRate, 
                                             int audioSampleRate, 
                                             int renderPass, 
@@ -23,6 +19,17 @@ namespace onAirXR.Server {
                                             int encodingPreset,
                                             int encodingPerformance);
 
+        [DllImport(LibName, EntryPoint = "axr_startupServer")]
+        public extern static int Startup(string licenseFile, int portSTAP, int portAMP, bool loopbackOnlyForSTAP);
+
+        public static void Shutdown() {
+            GL.IssuePluginEvent(axr_shutdownServer_RenderThread_Func(), 0);
+            axr_shutdownServer();
+        }
+
+        [DllImport(LibName)] private extern static int axr_startupServer(string licenseFile, int portSTAP, int portAMP, bool loopbackOnlyForSTAP);
+        [DllImport(LibName)] private extern static IntPtr axr_shutdownServer_RenderThread_Func();
+        [DllImport(LibName)] private extern static void axr_shutdownServer();
         [DllImport(LibName)] private extern static bool axr_peekMessage(out IntPtr source, out IntPtr data, out int length);
         [DllImport(LibName)] private extern static void axr_popMessage();
 
@@ -71,8 +78,8 @@ namespace onAirXR.Server {
         [DllImport(LibName, EntryPoint = "axr_requestRecordSession")]
         public extern static void RequestRecordSession(int playerID, string targetPath);
 
-        [DllImport(LibName, EntryPoint = "axr_recordVideo")]
-        public extern static void RecordVideo(int playerID, string outputPathWithoutExtension, int outputFormat, string sessionDataName);
+        [DllImport(LibName, EntryPoint = "axr_startRecordVideo")]
+        public extern static void StartRecordVideo(int playerID, string outputPathWithoutExtension, int outputFormat, string sessionDataName);
 
         [DllImport(LibName, EntryPoint = "axr_stopRecordVideo")]
         public extern static void StopRecordVideo(int playerID);

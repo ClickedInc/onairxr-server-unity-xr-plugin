@@ -56,7 +56,7 @@ namespace onAirXR.Server {
             }
 
             private void OnDisable() {
-                if (AXRServer.instance.isProfiling) {
+                if (Application.isPlaying && AXRServer.instance.isProfiling) {
                     AXRServer.instance.RequestStopProfile();
                 }
 
@@ -186,7 +186,7 @@ namespace onAirXR.Server {
 
                         if (record || recordSessionData) {
                             var recordPathWithoutExt = Path.Combine(_recordVideoDirectory, $"{_recordVideoName}_{DateTime.Now:yyMMddHHmmss}");
-                            AXRServer.instance.RecordVideo(recordPathWithoutExt, _recordVideoFormat, recordSessionData ? Path.GetFileName(_sessionDataPath) : null);
+                            AXRServer.instance.StartRecordVideo(recordPathWithoutExt, _recordVideoFormat, recordSessionData ? Path.GetFileName(_sessionDataPath) : null);
                         }
                         else if (stop) {
                             AXRServer.instance.StopRecordVideo();
