@@ -48,6 +48,7 @@ namespace onAirXR.Server {
         [DllImport(LibName)] private static extern void axr_MulticastPendInputUintStream(byte device, byte control, uint value);
         [DllImport(LibName)] private static extern void axr_MulticastPendInputFloatStream(byte device, byte control, float value);
         [DllImport(LibName)] private static extern void axr_MulticastPendInputPose(byte device, byte control, AXRVector3D position, AXRVector4D rotation);
+        [DllImport(LibName)] private static extern void axr_MulticastPendInputString(byte device, byte control, string value);
         [DllImport(LibName)] private static extern void axr_MulticastSendPendingInputs(long timestamp);
         [DllImport(LibName)] private static extern long axr_MulticastGetInputRecvTimestamp(string member);
         [DllImport(LibName)] private static extern bool axr_MulticastGetInputByteStream(string member, byte device, byte control, ref byte value);
@@ -55,6 +56,7 @@ namespace onAirXR.Server {
         [DllImport(LibName)] private static extern bool axr_MulticastGetInputUintStream(string member, byte device, byte control, ref uint value);
         [DllImport(LibName)] private static extern bool axr_MulticastGetInputFloatStream(string member, byte device, byte control, ref float value);
         [DllImport(LibName)] private static extern bool axr_MulticastGetInputPose(string member, byte device, byte control, ref AXRVector3D position, ref AXRVector4D rotation);
+        [DllImport(LibName)] private static extern bool axr_MulticastGetInputString(string member, byte device, byte control, out IntPtr data, out int length);
         [DllImport(LibName)] private static extern void axr_MulticastUpdate();
 
         public static void LoadOnce(string address, int port, string hint = null, bool leaveOnStartup = false) {
@@ -174,6 +176,17 @@ namespace onAirXR.Server {
             return true;
         }
 
+        public bool GetInputString(string member, byte device, byte control, ref string value) {
+            if (_state == State.Uninitialized) { return false; }
+
+            if (axr_MulticastGetInputString(member, device, control, out IntPtr data, out int length) == false) { return false; }
+
+            Marshal.Copy(data, _msgbuf, 0, length);
+            value = Encoding.UTF8.GetString(_msgbuf, 0, length);
+
+            return true;
+        }
+
         public void PendInputByteStream(byte device, byte control, byte value) {
             if (_state == State.Uninitialized) { return; }
 
@@ -202,6 +215,12 @@ namespace onAirXR.Server {
             if (_state == State.Uninitialized) { return; }
 
             axr_MulticastPendInputPose(device, control, new AXRVector3D(position), new AXRVector4D(rotation));
+        }
+
+        public void PendInputString(byte device, byte control, string value) {
+            if (_state == State.Uninitialized) { return; }
+
+            axr_MulticastPendInputString(device, control, value);
         }
 
         private void Start() {
