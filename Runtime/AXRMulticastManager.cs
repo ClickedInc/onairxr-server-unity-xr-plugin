@@ -134,37 +134,37 @@ namespace onAirXR.Server {
         private AndroidJavaObject _multicastLock;
 
         public long GetInputRecvTimestamp(string member) {
-            if (_state == State.Uninitialized) { return -1; }
+            if (_state == State.Uninitialized || _state == State.ShuttingDown) { return -1; }
 
             return axr_MulticastGetInputRecvTimestamp(member);
         }
 
         public bool GetInputByteStream(string member, byte device, byte control, ref byte value) {
-            if (_state == State.Uninitialized) { return false; }
+            if (_state == State.Uninitialized || _state == State.ShuttingDown) { return false; }
 
             return axr_MulticastGetInputByteStream(member, device, control, ref value);
         }
 
         public bool GetInputIntStream(string member, byte device, byte control, ref int value) {
-            if (_state == State.Uninitialized) { return false; }
+            if (_state == State.Uninitialized || _state == State.ShuttingDown) { return false; }
 
             return axr_MulticastGetInputIntStream(member, device, control, ref value);
         }
 
         public bool GetInputUintStream(string member, byte device, byte control, ref uint value) {
-            if (_state == State.Uninitialized) { return false; }
+            if (_state == State.Uninitialized || _state == State.ShuttingDown) { return false; }
 
             return axr_MulticastGetInputUintStream(member, device, control, ref value);
         }
 
         public bool GetInputFloatStream(string member, byte device, byte control, ref float value) {
-            if (_state == State.Uninitialized) { return false; }
+            if (_state == State.Uninitialized || _state == State.ShuttingDown) { return false; }
 
             return axr_MulticastGetInputFloatStream(member, device, control, ref value);
         }
 
         public bool GetInputPose(string member, byte device, byte control, ref Vector3 position, ref Quaternion rotation) {
-            if (_state == State.Uninitialized) { return false; }
+            if (_state == State.Uninitialized || _state == State.ShuttingDown) { return false; }
 
             var pos = new AXRVector3D();
             var rot = new AXRVector4D();
@@ -177,7 +177,7 @@ namespace onAirXR.Server {
         }
 
         public bool GetInputString(string member, byte device, byte control, ref string value) {
-            if (_state == State.Uninitialized) { return false; }
+            if (_state == State.Uninitialized || _state == State.ShuttingDown) { return false; }
 
             if (axr_MulticastGetInputString(member, device, control, out IntPtr data, out int length) == false) { return false; }
 
@@ -188,37 +188,37 @@ namespace onAirXR.Server {
         }
 
         public void PendInputByteStream(byte device, byte control, byte value) {
-            if (_state == State.Uninitialized) { return; }
+            if (_state == State.Uninitialized || _state == State.ShuttingDown) { return; }
 
             axr_MulticastPendInputByteStream(device, control, value);
         }
 
         public void PendInputIntStream(byte device, byte control, int value) {
-            if (_state == State.Uninitialized) { return; }
+            if (_state == State.Uninitialized || _state == State.ShuttingDown) { return; }
 
             axr_MulticastPendInputIntStream(device, control, value);
         }
 
         public void PendInputUintStream(byte device, byte control, uint value) {
-            if (_state == State.Uninitialized) { return; }
+            if (_state == State.Uninitialized || _state == State.ShuttingDown) { return; }
 
             axr_MulticastPendInputUintStream(device, control, value);
         }
 
         public void PendInputFloatStream(byte device, byte control, float value) {
-            if (_state == State.Uninitialized) { return; }
+            if (_state == State.Uninitialized || _state == State.ShuttingDown) { return; }
 
             axr_MulticastPendInputFloatStream(device, control, value);
         }
 
         public void PendInputPose(byte device, byte control, Vector3 position, Quaternion rotation) {
-            if (_state == State.Uninitialized) { return; }
+            if (_state == State.Uninitialized || _state == State.ShuttingDown) { return; }
 
             axr_MulticastPendInputPose(device, control, new AXRVector3D(position), new AXRVector4D(rotation));
         }
 
         public void PendInputString(byte device, byte control, string value) {
-            if (_state == State.Uninitialized) { return; }
+            if (_state == State.Uninitialized || _state == State.ShuttingDown) { return; }
 
             axr_MulticastPendInputString(device, control, value);
         }
@@ -244,7 +244,7 @@ namespace onAirXR.Server {
         }
 
         private void Update() {
-            if (_state != State.Uninitialized) {
+            if (_state != State.Uninitialized && _state != State.ShuttingDown) {
                 axr_MulticastUpdate();
                 dispatchMessage();
             }
@@ -263,6 +263,8 @@ namespace onAirXR.Server {
 
         private void OnDestroy() {
             if (_state == State.Uninitialized) { return; }
+
+            _state = State.ShuttingDown;
 
             axr_MulticastShutdown();
 
@@ -319,13 +321,13 @@ namespace onAirXR.Server {
         }
 
         private void setSubgroup(byte subgroup) {
-            if (_state == State.Uninitialized) { return; }
+            if (_state == State.Uninitialized || _state == State.ShuttingDown) { return; }
 
             axr_MulticastSetSubgroup(subgroup);
         }
 
         private void sendUserdata(byte[] data, int offset, int length) {
-            if (_state == State.Uninitialized) { return; }
+            if (_state == State.Uninitialized || _state == State.ShuttingDown) { return; }
 
             axr_MulticastSendUserdata(data, offset, length);
         }
@@ -397,7 +399,8 @@ namespace onAirXR.Server {
         private enum State {
             Uninitialized,
             Ready,
-            Joined
+            Joined,
+            ShuttingDown
         }
 
         private enum ErrorCode : int {
