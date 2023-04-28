@@ -19,6 +19,12 @@ namespace onAirXR.Server {
                                             int encodingPreset,
                                             int encodingPerformance);
 
+        [DllImport(LibName, EntryPoint = "axr_updateChromaKeyProps")]
+        public extern static void UpdateChromaKeyProps(float r, float g, float b, float similarity, float smoothness, float spill);
+
+        [DllImport(LibName, EntryPoint = "axr_updateVolumeInfo")]
+        public extern static void UpdateVolumeInfo(float posx, float posy, float posz, float rotx, float roty, float rotz, float rotw, float scalex, float scaley, float scalez);
+
         [DllImport(LibName, EntryPoint = "axr_startupServer")]
         public extern static int Startup(string licenseFile, int portSTAP, int portAMP, bool loopbackOnlyForSTAP);
 

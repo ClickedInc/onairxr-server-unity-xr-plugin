@@ -255,6 +255,8 @@ namespace onAirXR.Server {
         }
 
         private void onProfileReportReceived(AXRServerMessage message) {
+            Debug.Log($"[onairxr] profile report = {message.Body}");
+            
             foreach (var handler in _eventHandlers) {
                 handler.OnProfileReportReceived(message.Body);
             }
