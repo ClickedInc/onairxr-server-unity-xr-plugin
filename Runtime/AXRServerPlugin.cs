@@ -19,6 +19,24 @@ namespace onAirXR.Server {
                                             int encodingPreset,
                                             int encodingPerformance);
 
+        public static void ConfigureVolumeMesh(Mesh mesh) {
+            if (mesh == null || mesh.subMeshCount == 0 || mesh.vertexCount == 0 || mesh.GetTopology(0) != MeshTopology.Triangles) { return; }
+
+            var vertices = new float[mesh.vertexCount * 3];
+            for (var index = 0; index < mesh.vertexCount; index++) {
+                var vertex = mesh.vertices[index];
+
+                vertices[index * 3]     = vertex.x;
+                vertices[index * 3 + 1] = vertex.y;
+                vertices[index * 3 + 2] = vertex.z;
+            }
+
+            var indices = mesh.GetIndices(0);
+            axr_configureVolumeMesh(vertices, vertices.Length, indices, indices.Length);
+        }
+
+        [DllImport(LibName)] private extern static void axr_configureVolumeMesh(float[] vertices, int vertexCount, int[] indices, int indexCount);
+
         [DllImport(LibName, EntryPoint = "axr_updateChromaKeyProps")]
         public extern static void UpdateChromaKeyProps(float r, float g, float b, float similarity, float smoothness, float spill);
 
@@ -33,7 +51,6 @@ namespace onAirXR.Server {
             axr_shutdownServer();
         }
 
-        [DllImport(LibName)] private extern static int axr_startupServer(string licenseFile, int portSTAP, int portAMP, bool loopbackOnlyForSTAP);
         [DllImport(LibName)] private extern static IntPtr axr_shutdownServer_RenderThread_Func();
         [DllImport(LibName)] private extern static void axr_shutdownServer();
         [DllImport(LibName)] private extern static bool axr_peekMessage(out IntPtr source, out IntPtr data, out int length);
