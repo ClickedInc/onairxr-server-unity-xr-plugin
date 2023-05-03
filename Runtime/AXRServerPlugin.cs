@@ -20,7 +20,10 @@ namespace onAirXR.Server {
                                             int encodingPerformance);
 
         public static void ConfigureVolumeMesh(Mesh mesh) {
-            if (mesh == null || mesh.subMeshCount == 0 || mesh.vertexCount == 0 || mesh.GetTopology(0) != MeshTopology.Triangles) { return; }
+            if (mesh == null || mesh.subMeshCount == 0 || mesh.vertexCount == 0 || mesh.GetTopology(0) != MeshTopology.Triangles) { 
+                axr_configureVolumeMesh(null, 0, null, 0);
+                return; 
+            }
 
             var vertices = new float[mesh.vertexCount * 3];
             for (var index = 0; index < mesh.vertexCount; index++) {

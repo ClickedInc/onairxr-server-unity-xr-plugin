@@ -39,6 +39,9 @@ namespace onAirXR.Server {
 
         public AXRServerInput input { get; private set; }
         public AXRPlayerConfig config { get; private set; }
+        public AXRVolume currentVolume { private get; set; }
+        public AXRChromaKeyCamera currentChromaKey { private get; set; }
+
         public bool connected => _playerID > InvalidPlayerID;
         public bool isOnStreaming => connected && AXRServerPlugin.IsOnStreaming(_playerID);
         public bool isProfiling => connected && AXRServerPlugin.IsProfiling(_playerID);
@@ -50,6 +53,13 @@ namespace onAirXR.Server {
 
         public void Reconfigure(AXRServerSettings settings) {
             configure(settings);
+
+            if (currentVolume == null) {
+                AXRVolume.ClearConfiguration();
+            }
+            if (currentChromaKey == null) {
+                AXRChromaKeyCamera.ClearConfiguration();
+            }
         }
 
         public void RegisterEventHandler(EventHandler handler) {
