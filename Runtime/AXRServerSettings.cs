@@ -92,7 +92,7 @@ namespace onAirXR.Server {
         public AXRTextureColorSpaceHint propDisplayTextureColorSpaceHint => advancedSettingsEnabled ? displayTextureColorSpaceHint : AXRTextureColorSpaceHint.None;
         public bool propCpuReadableEncodeBuffer => cpuReadableEncodeBuffer;
         public AXRCodec propCodecs => advancedSettingsEnabled ? codecs : AXRCodec.All;
-        public AXREncodingPreset propEncodingPreset => advancedSettingsEnabled ? encodingPreset : AXREncodingPreset.UltraLowLatency;
+        public AXREncodingPreset propEncodingPreset => advancedSettingsEnabled ? encodingPreset : AXREncodingPreset.LowLatency;
         public AXREncodingPerformance propEncodingPerformance => advancedSettingsEnabled ? encodingPerformance : AXREncodingPerformance.VeryLow;
 
         public AXRServerSettings ParseCommandLine() {
