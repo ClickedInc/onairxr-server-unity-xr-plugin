@@ -1,7 +1,7 @@
 {
     "name": "com.onairxr.server",
     "version": "3.0.3",
-    "displayName": "onAirXR Server XR Plugin",
+    "displayName": "onAirXR",
     "description": "",
     "unity": "2020.1",
     "author": {
