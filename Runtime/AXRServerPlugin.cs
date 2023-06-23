@@ -12,7 +12,6 @@ namespace onAirXR.Server {
         public extern static bool Configure(float minFrameRate, 
                                             float maxFrameRate, 
                                             int audioSampleRate, 
-                                            int renderPass, 
                                             int framebufferTextureColorSpaceHint, 
                                             bool cpuReadableEncodeBuffer,
                                             int codecs,

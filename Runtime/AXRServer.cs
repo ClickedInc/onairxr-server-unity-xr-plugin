@@ -39,8 +39,6 @@ namespace onAirXR.Server {
 
         public AXRServerInput input { get; private set; }
         public AXRPlayerConfig config { get; private set; }
-        public AXRVolume currentVolume { private get; set; }
-        public AXRChromaKeyCamera currentChromaKey { private get; set; }
 
         public bool connected => _playerID > InvalidPlayerID;
         public bool isOnStreaming => connected && AXRServerPlugin.IsOnStreaming(_playerID);
@@ -54,12 +52,7 @@ namespace onAirXR.Server {
         public void Reconfigure(AXRServerSettings settings) {
             configure(settings);
 
-            if (currentVolume == null) {
-                AXRVolume.ClearConfiguration();
-            }
-            if (currentChromaKey == null) {
-                AXRChromaKeyCamera.ClearConfiguration();
-            }
+            Experimental_reconfigure();
         }
 
         public void RegisterEventHandler(EventHandler handler) {
@@ -173,12 +166,11 @@ namespace onAirXR.Server {
             AXRServerPlugin.Configure(settings.propMinFrameRate,
                                       MaxFramerate,
                                       AudioSettings.outputSampleRate,
-                                      (int)settings.propDesiredRenderPass,
                                       (int)settings.propDisplayTextureColorSpaceHint,
                                       settings.propCpuReadableEncodeBuffer,
                                       (int)settings.propCodecs,
                                       (int)settings.propEncodingPreset,
-                                      (int)settings.propEncodingPerformance);
+                                      (int)settings.propEncodingQuality);
         }
 
         private void processServerMessages() {
@@ -289,5 +281,22 @@ namespace onAirXR.Server {
                 _currentAudioListener = audioListener.gameObject.AddComponent<AXRAudioListener>();
             }
         }
+
+        // experimental features
+#if ONAIRXR_EXPERIMENTAL
+        public AXRVolume currentVolume { private get; set; }
+        public AXRChromaKeyCamera currentChromaKey { private get; set; }
+
+        private void Experimental_reconfigure() {
+            if (currentVolume == null) {
+                AXRVolume.ClearConfiguration();
+            }
+            if (currentChromaKey == null) {
+                AXRChromaKeyCamera.ClearConfiguration();
+            }
+        }
+#else
+        private void Experimental_reconfigure() {}
+#endif
     }
 }

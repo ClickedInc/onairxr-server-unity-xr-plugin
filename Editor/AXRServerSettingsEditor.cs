@@ -13,10 +13,6 @@ namespace onAirXR.Server {
         private SerializedProperty _propAdvancedSettingsEnabled;
         private SerializedProperty _propDesiredRenderPass;
         private SerializedProperty _propDisplayTextureColorSpaceHint;
-        private SerializedProperty _propCpuReadableEncodeBuffer;
-        private SerializedProperty _propCodecs;
-        private SerializedProperty _propEncodingPreset;
-        private SerializedProperty _propEncodingPerformance;
 
         private void OnEnable() {
             _propLicense = serializedObject.FindProperty("license");
@@ -26,10 +22,8 @@ namespace onAirXR.Server {
             _propAdvancedSettingsEnabled = serializedObject.FindProperty("advancedSettingsEnabled");
             _propDesiredRenderPass = serializedObject.FindProperty("desiredRenderPass");
             _propDisplayTextureColorSpaceHint = serializedObject.FindProperty("displayTextureColorSpaceHint");
-            _propCpuReadableEncodeBuffer = serializedObject.FindProperty("cpuReadableEncodeBuffer");
-            _propCodecs = serializedObject.FindProperty("codecs");
-            _propEncodingPreset = serializedObject.FindProperty("encodingPreset");
-            _propEncodingPerformance = serializedObject.FindProperty("encodingPerformance");
+
+            Experimental_OnEnable();
         }
 
         public override void OnInspectorGUI() {
@@ -53,10 +47,8 @@ namespace onAirXR.Server {
 
                     EditorGUILayout.PropertyField(_propDesiredRenderPass, Styles.labelDesiredRenderPass);
                     EditorGUILayout.PropertyField(_propDisplayTextureColorSpaceHint, Styles.labelDisplayTextureColorSpaceHint);
-                    EditorGUILayout.PropertyField(_propCpuReadableEncodeBuffer, Styles.labelCpuReadableEncodeBuffer);
-                    EditorGUILayout.PropertyField(_propCodecs, Styles.labelCodecs);
-                    EditorGUILayout.PropertyField(_propEncodingPreset, Styles.labelEncodingPreset);
-                    EditorGUILayout.PropertyField(_propEncodingPerformance, Styles.labelEncodingPerformance);
+
+                    Experimental_renderAdvancedSettings();
                 }
             }
             EditorGUILayout.EndVertical();
@@ -73,12 +65,40 @@ namespace onAirXR.Server {
             public static GUIContent labelMirrorBlitMode = new GUIContent("Mirror View Mode");
 
             public static GUIContent labelAdvancedSettingsEnabled = new GUIContent("Advanced Settings");
-            public static GUIContent labelDesiredRenderPass = new GUIContent("Desired Render Pass");
+            public static GUIContent labelDesiredRenderPass = new GUIContent("Render Pass");
             public static GUIContent labelDisplayTextureColorSpaceHint = new GUIContent("Display Texture Color Space Hint");
-            public static GUIContent labelCpuReadableEncodeBuffer = new GUIContent("CPU Readable Encode Buffer");
+        }
+
+        // experimental features
+#if ONAIRXR_EXPERIMENTAL
+        private SerializedProperty _propCpuReadableEncodeBuffer;
+        private SerializedProperty _propCodecs;
+        private SerializedProperty _propEncodingPreset;
+        private SerializedProperty _propEncodingQuality;
+
+        private void Experimental_OnEnable() {
+            _propCpuReadableEncodeBuffer = serializedObject.FindProperty("cpuReadableEncodeBuffer");
+            _propCodecs = serializedObject.FindProperty("codecs");
+            _propEncodingPreset = serializedObject.FindProperty("encodingPreset");
+            _propEncodingQuality = serializedObject.FindProperty("encodingQuality");
+        }
+
+        private void Experimental_renderAdvancedSettings() {
+            EditorGUILayout.PropertyField(_propCodecs, Experimental_Styles.labelCodecs);
+            EditorGUILayout.PropertyField(_propEncodingPreset, Experimental_Styles.labelEncodingPreset);
+            EditorGUILayout.PropertyField(_propEncodingQuality, Experimental_Styles.labelEncodingQuality);
+            EditorGUILayout.PropertyField(_propCpuReadableEncodeBuffer, Experimental_Styles.labelCpuReadableEncodeBuffer);
+        }
+
+        private static class Experimental_Styles {
             public static GUIContent labelCodecs = new GUIContent("Codecs");
             public static GUIContent labelEncodingPreset = new GUIContent("Encoding Preset");
-            public static GUIContent labelEncodingPerformance = new GUIContent("Encoding Performance");
+            public static GUIContent labelEncodingQuality = new GUIContent("Encoding Quality");
+            public static GUIContent labelCpuReadableEncodeBuffer = new GUIContent("CPU Readable Encode Buffer", "Must be set if you want to record a session as a video file.");
         }
+#else
+        private void Experimental_OnEnable() { }
+        private void Experimental_renderAdvancedSettings() { }
+#endif
     }
 }

@@ -69,18 +69,29 @@ namespace onAirXR.Server {
 
             switch (settings.propDesiredRenderPass) {
                 case AXRRenderPass.SinglePassInstanced:
-                    if ((display.textureLayout & XRDisplaySubsystem.TextureLayout.Texture2DArray) != 0) {
+                    if ((display.supportedTextureLayouts & XRDisplaySubsystem.TextureLayout.Texture2DArray) != 0) {
                         display.textureLayout = XRDisplaySubsystem.TextureLayout.Texture2DArray;
+                    }
+                    else if ((display.supportedTextureLayouts & XRDisplaySubsystem.TextureLayout.SeparateTexture2Ds) != 0) {
+                        display.textureLayout = XRDisplaySubsystem.TextureLayout.SeparateTexture2Ds;
+
+                        Debug.LogWarning($"[onairxr] warning: Single Pass Instanced rendering is not supported. Fallback to Multi Pass rendering.");
+                    }
+                    else {
+                        Debug.LogError("$[onairxr] ERROR: any render pass is not supported.");
                     }
                     break;
                 case AXRRenderPass.MultiPass:
-                    if ((display.textureLayout & XRDisplaySubsystem.TextureLayout.SeparateTexture2Ds) != 0) {
+                    if ((display.supportedTextureLayouts & XRDisplaySubsystem.TextureLayout.SeparateTexture2Ds) != 0) {
                         display.textureLayout = XRDisplaySubsystem.TextureLayout.SeparateTexture2Ds;
                     }
-                    break;
-                case AXRRenderPass.SinglePassSideBySide:
-                    if ((display.textureLayout & XRDisplaySubsystem.TextureLayout.SingleTexture2D) != 0) {
-                        display.textureLayout = XRDisplaySubsystem.TextureLayout.SingleTexture2D;
+                    else if ((display.supportedTextureLayouts & XRDisplaySubsystem.TextureLayout.Texture2DArray) != 0) {
+                        display.textureLayout = XRDisplaySubsystem.TextureLayout.Texture2DArray;
+
+                        Debug.LogWarning($"[onairxr] warning: Multi Pass rendering is not supported. Fallback to Single Pass Instanced rendering.");
+                    }
+                    else {
+                        Debug.LogError("$[onairxr] ERROR: any render pass is not supported.");
                     }
                     break;
             }

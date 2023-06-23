@@ -16,8 +16,7 @@ namespace onAirXR.Server {
 
     public enum AXRRenderPass {
         SinglePassInstanced = 0,
-        MultiPass,
-        SinglePassSideBySide
+        MultiPass
     }
 
     public enum AXRTextureColorSpaceHint {
@@ -68,10 +67,6 @@ namespace onAirXR.Server {
         [SerializeField] private bool advancedSettingsEnabled = false;
         [SerializeField] private AXRRenderPass desiredRenderPass = AXRRenderPass.SinglePassInstanced;
         [SerializeField] private AXRTextureColorSpaceHint displayTextureColorSpaceHint = AXRTextureColorSpaceHint.None;
-        [SerializeField] private bool cpuReadableEncodeBuffer = false;
-        [SerializeField] private AXRCodec codecs = AXRCodec.All;
-        [SerializeField] private AXREncodingPreset encodingPreset = AXREncodingPreset.UltraLowLatency;
-        [SerializeField] private AXREncodingPerformance encodingPerformance = AXREncodingPerformance.VeryLow;
 
         public string propLicense {
             get {
@@ -89,11 +84,24 @@ namespace onAirXR.Server {
         public int propAmpPort => ampPort;
         public bool propLoopbackOnly => loopbackOnly;
         public AXRRenderPass propDesiredRenderPass => advancedSettingsEnabled ? desiredRenderPass : AXRRenderPass.SinglePassInstanced;
-        public AXRTextureColorSpaceHint propDisplayTextureColorSpaceHint => advancedSettingsEnabled ? displayTextureColorSpaceHint : AXRTextureColorSpaceHint.None;
-        public bool propCpuReadableEncodeBuffer => cpuReadableEncodeBuffer;
-        public AXRCodec propCodecs => advancedSettingsEnabled ? codecs : AXRCodec.All;
-        public AXREncodingPreset propEncodingPreset => advancedSettingsEnabled ? encodingPreset : AXREncodingPreset.LowLatency;
-        public AXREncodingPerformance propEncodingPerformance => advancedSettingsEnabled ? encodingPerformance : AXREncodingPerformance.VeryLow;
+
+        public AXRTextureColorSpaceHint propDisplayTextureColorSpaceHint {
+            get {
+                var value = advancedSettingsEnabled ? displayTextureColorSpaceHint : AXRTextureColorSpaceHint.None;
+
+                if (value == AXRTextureColorSpaceHint.None) {
+                    if (isUniveralRenderPipeline()) {
+                        // workaround: URP uses always non-sRGB texture even if color space is set to linear. (but xr plugin misleads as if it were sRGB.)
+                        value = AXRTextureColorSpaceHint.Gamma;
+                    }
+                    else if (isHDRenderPipeline() && QualitySettings.activeColorSpace == ColorSpace.Gamma) {
+                        // workaround: On HDRP, xr plugin misleads as if texture were sRGB even when color space is set to gamma.
+                        value = AXRTextureColorSpaceHint.Gamma;
+                    }
+                }
+                return value;
+            }
+        }
 
         public AXRServerSettings ParseCommandLine() {
             var pairs = AXRUtils.ParseCommandLine(Environment.GetCommandLineArgs());
@@ -154,6 +162,9 @@ namespace onAirXR.Server {
             return this;
         }
 
+        private bool isUniveralRenderPipeline() => UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline?.GetType()?.Name?.Equals("UniversalRenderPipelineAsset") ?? false;
+        private bool isHDRenderPipeline() => UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline?.GetType()?.Name?.Equals("HDRenderPipelineAsset") ?? false;
+
         [Serializable]
         private class AXRServerSettingsReader {
             [SerializeField] private AXRServerSettings onairxr;
@@ -163,5 +174,27 @@ namespace onAirXR.Server {
                 JsonUtility.FromJsonOverwrite(File.ReadAllText(fileFrom), this);
             }
         }
+
+        // experimental features
+        #pragma warning disable 0414
+
+        [SerializeField] private bool cpuReadableEncodeBuffer = false;
+        [SerializeField] private AXRCodec codecs = AXRCodec.All;
+        [SerializeField] private AXREncodingPreset encodingPreset = AXREncodingPreset.LowLatency;
+        [SerializeField] private AXREncodingQuality encodingQuality = AXREncodingQuality.VeryHigh;
+        
+        #pragma warning restore 0414
+
+#if ONAIRXR_EXPERIMENTAL
+        public bool propCpuReadableEncodeBuffer => advancedSettingsEnabled ? cpuReadableEncodeBuffer : false;
+        public AXRCodec propCodecs => advancedSettingsEnabled ? codecs : AXRCodec.All;
+        public AXREncodingPreset propEncodingPreset => advancedSettingsEnabled ? encodingPreset : AXREncodingPreset.LowLatency;
+        public AXREncodingQuality propEncodingQuality => advancedSettingsEnabled ? encodingQuality : AXREncodingQuality.VeryHigh;
+#else
+        public bool propCpuReadableEncodeBuffer => false;
+        public AXRCodec propCodecs => AXRCodec.All;
+        public AXREncodingPreset propEncodingPreset => AXREncodingPreset.LowLatency;
+        public AXREncodingQuality propEncodingQuality => AXREncodingQuality.VeryHigh;
+#endif
     }
 }

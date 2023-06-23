@@ -80,11 +80,11 @@ namespace onAirXR.Server {
         UltraLowLatency = 2
     }
 
-    public enum AXREncodingPerformance { 
-        VeryHigh = 0,
-        High,
-        Moderate,
+    public enum AXREncodingQuality { 
+        VeryLow = 0,
         Low,
-        VeryLow
+        Moderate,
+        High,
+        VeryHigh
     }
 }
