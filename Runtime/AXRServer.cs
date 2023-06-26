@@ -1,11 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
+
+[assembly: InternalsVisibleTo("onAirXR.Server.Editor")]
+[assembly: InternalsVisibleTo("onAirXR.Playground.Server")]
 
 namespace onAirXR.Server {
     public class AXRServer : MonoBehaviour {
         private const int InvalidPlayerID = -1;
         private const float MaxFramerate = 120f;
+
+        internal interface InternalEventHandler {
+            void OnProfileDataReceived(string path);
+            void OnProfileReportReceived(string report);
+            void OnQueryResponseReceived(string statement, string body);
+        }
 
         public interface EventHandler {
             void OnConnect(AXRPlayerConfig config);
@@ -13,9 +23,6 @@ namespace onAirXR.Server {
             void OnDeactivate();
             void OnDisconnect();
             void OnUserdataReceived(byte[] data);
-            void OnProfileDataReceived(string path);
-            void OnProfileReportReceived(string report);
-            void OnQueryResponseReceived(string statement, string body);
         }
 
         private static AXRServer _instance;
@@ -34,26 +41,18 @@ namespace onAirXR.Server {
         }
 
         private List<EventHandler> _eventHandlers = new List<EventHandler>();
+        private List<InternalEventHandler> _internalEventHandlers = new List<InternalEventHandler>();
         private AXRAudioListener _currentAudioListener;
         private int _playerID = -1;
+
+        internal bool isProfiling => connected && AXRServerPlugin.IsProfiling(_playerID);
+        internal bool isRecording => connected && AXRServerPlugin.IsRecording(_playerID);
 
         public AXRServerInput input { get; private set; }
         public AXRPlayerConfig config { get; private set; }
 
         public bool connected => _playerID > InvalidPlayerID;
         public bool isOnStreaming => connected && AXRServerPlugin.IsOnStreaming(_playerID);
-        public bool isProfiling => connected && AXRServerPlugin.IsProfiling(_playerID);
-        public bool isRecording => connected && AXRServerPlugin.IsRecording(_playerID);
-
-        public void LoadOnce() {
-            // do nothing. just to instantiate
-        }
-
-        public void Reconfigure(AXRServerSettings settings) {
-            configure(settings);
-
-            Experimental_reconfigure();
-        }
 
         public void RegisterEventHandler(EventHandler handler) {
             if (_eventHandlers.Contains(handler)) { return; }
@@ -67,61 +66,83 @@ namespace onAirXR.Server {
             _eventHandlers.Remove(handler);
         }
 
-        public void RequestConfigureSession(ulong minBitrate, ulong startBitrate, ulong maxBitrate) {
+        internal void RegisterInternalEventHandler(InternalEventHandler handler) {
+            if (_internalEventHandlers.Contains(handler)) { return; }
+
+            _internalEventHandlers.Add(handler);
+        }
+
+        internal void UnregisterInternalEventHandler(InternalEventHandler handler) {
+            if (_internalEventHandlers.Contains(handler) == false) { return; }
+
+            _internalEventHandlers.Remove(handler);
+        }
+
+        internal void LoadOnce() {
+            // do nothing. just to instantiate
+        }
+
+        internal void Reconfigure(AXRServerSettings settings) {
+            configure(settings);
+
+            Experimental_reconfigure();
+        }
+
+        internal void RequestConfigureSession(ulong minBitrate, ulong startBitrate, ulong maxBitrate) {
             if (connected == false) { return; }
 
             AXRServerPlugin.RequestConfigureSession(_playerID, minBitrate, startBitrate, maxBitrate);
         }
 
-        public void RequestImportSessionData(string path) {
+        internal void RequestImportSessionData(string path) {
             if (connected == false) { return; }
 
             AXRServerPlugin.RequestImportSessionData(_playerID, path);
         }
 
-        public void RequestRecordSession(string path) {
+        internal void RequestRecordSession(string path) {
             if (connected == false) { return; }
 
             AXRServerPlugin.RequestRecordSession(_playerID, path);
         }
 
-        public void StartRecordVideo(string outputPathWithoutExt, AXRRecordFormat outputFormat, string sessionDataName = null) {
+        internal void StartRecordVideo(string outputPathWithoutExt, AXRRecordFormat outputFormat, string sessionDataName = null) {
             if (connected == false) { return; }
 
             AXRServerPlugin.StartRecordVideo(_playerID, outputPathWithoutExt, (int)outputFormat, string.IsNullOrEmpty(sessionDataName) == false ? sessionDataName : null);
         }
 
-        public void StopRecordVideo() {
+        internal void StopRecordVideo() {
             if (connected == false) { return; }
 
             AXRServerPlugin.StopRecordVideo(_playerID);
         }
 
-        public void RequestPlay(string sessionDataName = null) {
+        internal void RequestPlay(string sessionDataName = null) {
             if (connected == false) { return; }
 
             AXRServerPlugin.RequestPlay(_playerID, string.IsNullOrEmpty(sessionDataName) == false ? sessionDataName : null);
         }
 
-        public void RequestStop() {
+        internal void RequestStop() {
             if (connected == false) { return; }
 
             AXRServerPlugin.RequestStop(_playerID);
         }
 
-        public void RequestStartProfile(string directory, string filename, string sessionDataName = null) {
+        internal void RequestStartProfile(string directory, string filename, string sessionDataName = null) {
             if (connected == false) { return; }
 
             AXRServerPlugin.RequestStartProfile(_playerID, directory, filename, sessionDataName);
         }
 
-        public void RequestStopProfile() {
+        internal void RequestStopProfile() {
             if (connected == false) { return; }
 
             AXRServerPlugin.RequestStopProfile(_playerID);
         }
 
-        public void RequestQuery(string statement) {
+        internal void RequestQuery(string statement) {
             if (connected == false) { return; }
 
             AXRServerPlugin.RequestQuery(_playerID, statement);
@@ -251,7 +272,7 @@ namespace onAirXR.Server {
         }
 
         private void onProfileDataReceived(AXRServerMessage message) {
-            foreach (var handler in _eventHandlers) {
+            foreach (var handler in _internalEventHandlers) {
                 handler.OnProfileDataReceived(message.DataFilePath);
             }
         }
@@ -259,13 +280,13 @@ namespace onAirXR.Server {
         private void onProfileReportReceived(AXRServerMessage message) {
             Debug.Log($"[onairxr] profile report = {message.Body}");
             
-            foreach (var handler in _eventHandlers) {
+            foreach (var handler in _internalEventHandlers) {
                 handler.OnProfileReportReceived(message.Body);
             }
         }
 
         private void onQueryResponseReceived(AXRServerMessage message) {
-            foreach (var handler in _eventHandlers) {
+            foreach (var handler in _internalEventHandlers) {
                 handler.OnQueryResponseReceived(message.Statement, message.Body);
             }
         }

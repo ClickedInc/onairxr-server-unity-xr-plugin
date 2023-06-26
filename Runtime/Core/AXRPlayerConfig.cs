@@ -16,6 +16,7 @@ namespace onAirXR.Server {
         }
 
         [SerializeField] private string UserID;
+        [SerializeField] private string Place;
         [SerializeField] private bool Stereoscopy;
         [SerializeField] private int VideoWidth;
         [SerializeField] private int VideoHeight;
@@ -31,5 +32,6 @@ namespace onAirXR.Server {
         public Vector3 eyeCenterPosition => EyeCenterPosition;
         public float ipd => InterpupillaryDistance;
         public string userID => UserID;
+        public string place => Place;
     }
 }
