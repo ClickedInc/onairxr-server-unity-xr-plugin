@@ -42,6 +42,54 @@ namespace onAirXR.Server {
             }
         }
 
+        public bool TryGetFeatureValue(AXRInputDeviceID device, InputFeatureUsage<Vector3> usage, ref Vector3 value) {
+            switch (device) {
+                case AXRInputDeviceID.HeadTracker:
+                    return tryGetFeatureValue(_inputMain, usage, ref value);
+                case AXRInputDeviceID.LeftHandTracker:
+                    return tryGetFeatureValue(_inputLeftController, usage, ref value);
+                case AXRInputDeviceID.RightHandTracker:
+                    return tryGetFeatureValue(_inputRightController, usage, ref value);
+                case AXRInputDeviceID.Controller:
+                    if (tryGetFeatureValue(_inputLeftController, usage, ref value)) { return true; }
+                    return tryGetFeatureValue(_inputRightController, usage, ref value);
+                default:
+                    return false;
+            }
+        }
+
+        public bool TryGetFeatureValue(AXRInputDeviceID device, InputFeatureUsage<Quaternion> usage, ref Quaternion value) {
+            switch (device) {
+                case AXRInputDeviceID.HeadTracker:
+                    return tryGetFeatureValue(_inputMain, usage, ref value);
+                case AXRInputDeviceID.LeftHandTracker:
+                    return tryGetFeatureValue(_inputLeftController, usage, ref value);
+                case AXRInputDeviceID.RightHandTracker:
+                    return tryGetFeatureValue(_inputRightController, usage, ref value);
+                case AXRInputDeviceID.Controller:
+                    if (tryGetFeatureValue(_inputLeftController, usage, ref value)) { return true; }
+                    return tryGetFeatureValue(_inputRightController, usage, ref value);
+                default:
+                    return false;
+            }
+        }
+
+        public bool TryGetFeatureValue(AXRInputDeviceID device, InputFeatureUsage<bool> usage, ref bool value) {
+            switch (device) {
+                case AXRInputDeviceID.HeadTracker:
+                    return tryGetFeatureValue(_inputMain, usage, ref value);
+                case AXRInputDeviceID.LeftHandTracker:
+                    return tryGetFeatureValue(_inputLeftController, usage, ref value);
+                case AXRInputDeviceID.RightHandTracker:
+                    return tryGetFeatureValue(_inputRightController, usage, ref value);
+                case AXRInputDeviceID.Controller:
+                    if (tryGetFeatureValue(_inputLeftController, usage, ref value)) { return true; }
+                    return tryGetFeatureValue(_inputRightController, usage, ref value);
+                default:
+                    return false;
+            }
+        }
+
         public bool TryGetFeatureValue(AXRInputDeviceID device, InputFeatureUsage<float> usage, ref float value) {
             switch (device) {
                 case AXRInputDeviceID.HeadTracker:
@@ -86,6 +134,24 @@ namespace onAirXR.Server {
             if (devices.Contains(device)) { return; }
 
             devices.Add(device);
+        }
+
+        private bool tryGetFeatureValue(List<InputDevice> devices, InputFeatureUsage<Vector3> usage, ref Vector3 value) {
+            if (devices.Count == 0) { return false; }
+
+            return devices[0].TryGetFeatureValue(usage, out value);
+        }
+
+        private bool tryGetFeatureValue(List<InputDevice> devices, InputFeatureUsage<Quaternion> usage, ref Quaternion value) {
+            if (devices.Count == 0) { return false; }
+
+            return devices[0].TryGetFeatureValue(usage, out value);
+        }
+
+        private bool tryGetFeatureValue(List<InputDevice> devices, InputFeatureUsage<bool> usage, ref bool value) {
+            if (devices.Count == 0) { return false; }
+
+            return devices[0].TryGetFeatureValue(usage, out value);
         }
 
         private bool tryGetFeatureValue(List<InputDevice> devices, InputFeatureUsage<float> usage, ref float value) {
