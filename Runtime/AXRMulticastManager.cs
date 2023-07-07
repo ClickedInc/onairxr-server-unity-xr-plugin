@@ -62,9 +62,11 @@ namespace onAirXR.Server {
         public static void LoadOnce(string address, int port, string hint = null, bool leaveOnStartup = false) {
             if (_instance != null || string.IsNullOrEmpty(address)) { return; }
 
-            _instance = new GameObject("AXRMulticastManager").AddComponent<AXRMulticastManager>();
-            DontDestroyOnLoad(_instance.gameObject);
+            var go = new GameObject("AXRMulticastManager");
+            go.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector;
+            DontDestroyOnLoad(go);
 
+            _instance = go.AddComponent<AXRMulticastManager>();
             _instance._address = address;
             _instance._port = port;
             _instance._leaveOnStartup = leaveOnStartup;

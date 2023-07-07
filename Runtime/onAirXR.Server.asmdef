@@ -1,20 +1,26 @@
 {
     "name": "onAirXR.Server",
+    "rootNamespace": "",
     "references": [
         "Unity.XR.Management",
         "Unity.InputSystem"
     ],
-    "optionalUnityReference": [],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor",
+        "WindowsStandalone64"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReference": false,
+    "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [{
-        "name": "com.unity.inputsystem",
-        "expression": "",
-        "define": "UNITY_INPUT_SYSTEM"
-    }]
+    "versionDefines": [
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "",
+            "define": "UNITY_INPUT_SYSTEM"
+        }
+    ],
+    "noEngineReferences": false
 }

@@ -50,7 +50,7 @@ namespace onAirXR.Server {
             InputLayoutLoader.RegisterInputLayouts();
 #endif
 
-            AXRServer.instance.LoadOnce();
+            AXRServer.LoadOnce();
 
             CreateSubsystem<XRDisplaySubsystemDescriptor, XRDisplaySubsystem>(_displaySubsystemDescriptors, "onAirXR Display");
             CreateSubsystem<XRInputSubsystemDescriptor, XRInputSubsystem>(_inputSubsystemDescriptors, "onAirXR Input");

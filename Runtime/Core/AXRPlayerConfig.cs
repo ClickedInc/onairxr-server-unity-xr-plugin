@@ -24,6 +24,8 @@ namespace onAirXR.Server {
         [SerializeField] private float FrameRate;
         [SerializeField] private float InterpupillaryDistance;
         [SerializeField] private Vector3 EyeCenterPosition;
+        [SerializeField] private ulong VideoStartBitrate;
+        [SerializeField] private ulong VideoMaxBitrate;
 
         public AXRPlayerType type => Stereoscopy ? AXRPlayerType.Stereoscopic : AXRPlayerType.Monoscopic;
         public int videoWidth => VideoWidth;
@@ -33,5 +35,7 @@ namespace onAirXR.Server {
         public float ipd => InterpupillaryDistance;
         public string userID => UserID;
         public string place => Place;
+        public ulong videoStartBitrate => VideoStartBitrate;
+        public ulong videoMaxBitrate => VideoMaxBitrate;
     }
 }

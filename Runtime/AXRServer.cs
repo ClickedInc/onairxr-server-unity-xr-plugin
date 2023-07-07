@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 
 [assembly: InternalsVisibleTo("onAirXR.Server.Editor")]
-[assembly: InternalsVisibleTo("onAirXR.Playground.Server")]
+[assembly: InternalsVisibleTo("onAirXR.Playground")]
 
 namespace onAirXR.Server {
     public class AXRServer : MonoBehaviour {
@@ -25,19 +25,16 @@ namespace onAirXR.Server {
             void OnUserdataReceived(byte[] data);
         }
 
-        private static AXRServer _instance;
+        public static AXRServer instance { get; private set; }
 
-        public static AXRServer instance {
-            get {
-                if (_instance == null) {
-                    var go = new GameObject("AXRServer");
-                    go.hideFlags = HideFlags.HideAndDontSave;
-                    DontDestroyOnLoad(go);
+        internal static void LoadOnce() {
+            if (instance != null) { return; }
 
-                    _instance = go.AddComponent<AXRServer>();
-                }
-                return _instance;
-            }
+            var go = new GameObject("AXRServer");
+            go.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector;
+            DontDestroyOnLoad(go);
+
+            instance = go.AddComponent<AXRServer>();
         }
 
         private List<EventHandler> _eventHandlers = new List<EventHandler>();
@@ -76,10 +73,6 @@ namespace onAirXR.Server {
             if (_internalEventHandlers.Contains(handler) == false) { return; }
 
             _internalEventHandlers.Remove(handler);
-        }
-
-        internal void LoadOnce() {
-            // do nothing. just to instantiate
         }
 
         internal void Reconfigure(AXRServerSettings settings) {
@@ -133,7 +126,7 @@ namespace onAirXR.Server {
         internal void RequestStartProfile(string directory, string filename, string sessionDataName = null) {
             if (connected == false) { return; }
 
-            AXRServerPlugin.RequestStartProfile(_playerID, directory, filename, sessionDataName);
+            AXRServerPlugin.RequestStartProfile(_playerID, directory, filename, string.IsNullOrEmpty(sessionDataName) == false ? sessionDataName : null);
         }
 
         internal void RequestStopProfile() {
@@ -174,13 +167,14 @@ namespace onAirXR.Server {
         }
 
         private void OnApplicationQuit() {
-            if (_instance != null) {
-                Destroy(_instance.gameObject);
+            if (instance != null) {
+                Destroy(instance.gameObject);
             }
         }
 
         private void OnDestroy() {
             AXRServerPlugin.Shutdown();
+            instance = null;
         }
 
         private void configure(AXRServerSettings settings) {
