@@ -23,6 +23,7 @@ namespace onAirXR.Server {
             void MemberUserdataReceived(AXRMulticastManager manager, string member, byte subgroup, byte[] data);
             void GetInputsPerFrame(AXRMulticastManager manager);
             bool PendInputsPerFrame(AXRMulticastManager manager);
+            void LateUpdateBeforeJoin(AXRMulticastManager manager);
         }
 
         private static AXRMulticastManager _instance;
@@ -255,11 +256,16 @@ namespace onAirXR.Server {
         }
 
         private void LateUpdate() {
-            if (_delegate == null || _state != State.Joined) { return; }
-
-            var timestamp = axr_MulticastBeginPendInput();
-            if (_delegate.PendInputsPerFrame(this)) {
-                axr_MulticastSendPendingInputs(timestamp);
+            if (_delegate == null) { return; }
+            
+            if (_state == State.Joined) {
+                var timestamp = axr_MulticastBeginPendInput();
+                if (_delegate.PendInputsPerFrame(this)) {
+                    axr_MulticastSendPendingInputs(timestamp);
+                }
+            }
+            else {
+                _delegate.LateUpdateBeforeJoin(this);
             }
         }
 
