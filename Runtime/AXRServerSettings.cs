@@ -30,6 +30,9 @@ namespace onAirXR.Server {
     public class AXRServerSettings : ScriptableObject {
         public const string SettingsKey = "com.onairxr.server.settings";
 
+        public static bool IsUniveralRenderPipeline() => UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline?.GetType()?.Name?.Equals("UniversalRenderPipelineAsset") ?? false;
+        public static bool IsHDRenderPipeline() => UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline?.GetType()?.Name?.Equals("HDRenderPipelineAsset") ?? false;
+
 #if UNITY_EDITOR
         public static AXRServerSettings instance {
             get {
@@ -90,11 +93,11 @@ namespace onAirXR.Server {
                 var value = advancedSettingsEnabled ? displayTextureColorSpaceHint : AXRTextureColorSpaceHint.None;
 
                 if (value == AXRTextureColorSpaceHint.None) {
-                    if (isUniveralRenderPipeline()) {
+                    if (IsUniveralRenderPipeline()) {
                         // workaround: URP uses always non-sRGB texture even if color space is set to linear. (but xr plugin misleads as if it were sRGB.)
                         value = AXRTextureColorSpaceHint.Gamma;
                     }
-                    else if (isHDRenderPipeline() && QualitySettings.activeColorSpace == ColorSpace.Gamma) {
+                    else if (IsHDRenderPipeline() && QualitySettings.activeColorSpace == ColorSpace.Gamma) {
                         // workaround: On HDRP, xr plugin misleads as if texture were sRGB even when color space is set to gamma.
                         value = AXRTextureColorSpaceHint.Gamma;
                     }
@@ -161,9 +164,6 @@ namespace onAirXR.Server {
 
             return this;
         }
-
-        private bool isUniveralRenderPipeline() => UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline?.GetType()?.Name?.Equals("UniversalRenderPipelineAsset") ?? false;
-        private bool isHDRenderPipeline() => UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline?.GetType()?.Name?.Equals("HDRenderPipelineAsset") ?? false;
 
         [Serializable]
         private class AXRServerSettingsReader {

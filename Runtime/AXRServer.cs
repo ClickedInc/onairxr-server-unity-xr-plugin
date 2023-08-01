@@ -55,6 +55,13 @@ namespace onAirXR.Server {
             if (_eventHandlers.Contains(handler)) { return; }
 
             _eventHandlers.Add(handler);
+
+            if (connected) {
+                handler.OnConnect(config);
+            }
+            if (isOnStreaming) {
+                handler.OnActivate();
+            }
         }
 
         public void UnregisterEventHandler(EventHandler handler) {

@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Unity.XR.Management",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "Unity.RenderPipelines.Universal.Runtime"
     ],
     "includePlatforms": [
         "Editor",
@@ -20,6 +21,11 @@
             "name": "com.unity.inputsystem",
             "expression": "",
             "define": "UNITY_INPUT_SYSTEM"
+        },
+        {
+            "name": "com.unity.render-pipelines.universal",
+            "expression": "",
+            "define": "UNITY_RENDER_PIPELINES_UNIVERSAL"
         }
     ],
     "noEngineReferences": false

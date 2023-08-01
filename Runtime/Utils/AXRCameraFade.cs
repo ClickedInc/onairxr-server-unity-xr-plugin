@@ -7,6 +7,7 @@
 
  ***********************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
@@ -56,6 +57,7 @@ namespace onAirXR.Server {
         private Mesh _fadeMesh;
         private Material _fadeMaterial;
         private Dictionary<int, Fader> _faders = new Dictionary<int, Fader>();
+        private CameraEvent _cameraEventToFade = CameraEvent.AfterImageEffects;
 
         [SerializeField] string _tag = "default";
 
@@ -84,6 +86,14 @@ namespace onAirXR.Server {
             }
         }
 
+        internal void Render(ScriptableRenderContext context) {
+            // NOTE: fade material can be null if not playing in editor
+            if (_fadeMaterial == null) { return; }
+
+            applyFadeCommands(_fadeMaterial.color != Color.clear, false);
+            updateFadeCommands(context);
+        }
+
         private void Awake() {
             _thisTransform = transform;
             _camera = GetComponent<Camera>();
@@ -96,7 +106,7 @@ namespace onAirXR.Server {
 
         private void OnDestroy() {
             if (_commandBufferApplied) {
-                _camera.RemoveCommandBuffer(CameraEvent.AfterEverything, _commandBuffer);
+                _camera.RemoveCommandBuffer(_cameraEventToFade, _commandBuffer);
                 _commandBufferApplied = false;
             }
 
@@ -110,7 +120,6 @@ namespace onAirXR.Server {
 
         private void OnPreRender() {
             applyFadeCommands(_fadeMaterial.color != Color.clear);
-
             updateFadeCommands();
         }
 
@@ -121,7 +130,7 @@ namespace onAirXR.Server {
             _fadeMaterial.color = Color.clear;
 
             var distance = Mathf.Min((_camera.nearClipPlane + _camera.farClipPlane) / 2, _camera.nearClipPlane + 0.1f);
-            var halfSize = distance * FadeQuadAtan;
+            var halfSize = distance * FadeQuadAtan * 2;
             _fadeMesh = new Mesh();
             _fadeMesh.vertices = new Vector3[] {
                 new Vector3(-halfSize, halfSize, distance),
@@ -138,24 +147,32 @@ namespace onAirXR.Server {
             _fadeMesh.triangles = new int[] { 0, 1, 2, 2, 1, 3 };
         }
 
-        private void applyFadeCommands(bool apply) {
+        private void applyFadeCommands(bool apply, bool useCameraCommandBuffer = true) {
             if (apply == _commandBufferApplied) { return; }
 
             if (apply) {
-                _camera.AddCommandBuffer(CameraEvent.AfterEverything, _commandBuffer);
+                if (useCameraCommandBuffer) {
+                    _camera.AddCommandBuffer(_cameraEventToFade, _commandBuffer);
+                }
                 _commandBufferApplied = true;
             }
             else {
-                _camera.RemoveCommandBuffer(CameraEvent.AfterEverything, _commandBuffer);
+                if (useCameraCommandBuffer) {
+                    _camera.RemoveCommandBuffer(_cameraEventToFade, _commandBuffer);
+                }
                 _commandBufferApplied = false;
             }
         }
 
-        private void updateFadeCommands() {
+        private void updateFadeCommands(Nullable<ScriptableRenderContext> context = null) {
             if (_commandBufferApplied == false) { return; }
 
             _commandBuffer.Clear();
             _commandBuffer.DrawMesh(_fadeMesh, _thisTransform.localToWorldMatrix, _fadeMaterial);
+
+            if (context != null) {
+                context.Value.ExecuteCommandBuffer(_commandBuffer);
+            }
         }
 
         private async Task fadeTask(int layer, Color from, Color to, float duration) {
