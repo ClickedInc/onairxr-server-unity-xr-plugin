@@ -7,7 +7,7 @@ using UnityEditor;
 
 #if ONAIRXR_EXPERIMENTAL
 
-namespace onAirXR.Server {
+namespace onAirXR.Server.Editor {
     public class AXRSessionControlWindow {
         [MenuItem("onAirXR/Server/Open Session Controls...", false, 100)]
         public static void ShowWindow() {

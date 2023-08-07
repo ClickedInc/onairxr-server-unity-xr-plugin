@@ -28,13 +28,13 @@ namespace onAirXR.Server {
     [Serializable]
     [XRConfigurationData("onAirXR Server", SettingsKey)]
     public class AXRServerSettings : ScriptableObject {
-        public const string SettingsKey = "com.onairxr.server.settings";
+        internal const string SettingsKey = "com.onairxr.server.settings";
 
-        public static bool IsUniveralRenderPipeline() => UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline?.GetType()?.Name?.Equals("UniversalRenderPipelineAsset") ?? false;
-        public static bool IsHDRenderPipeline() => UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline?.GetType()?.Name?.Equals("HDRenderPipelineAsset") ?? false;
+        internal static bool IsUniveralRenderPipeline() => UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline?.GetType()?.Name?.Equals("UniversalRenderPipelineAsset") ?? false;
+        internal static bool IsHDRenderPipeline() => UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline?.GetType()?.Name?.Equals("HDRenderPipelineAsset") ?? false;
 
 #if UNITY_EDITOR
-        public static AXRServerSettings instance {
+        internal static AXRServerSettings instance {
             get {
                 UnityEngine.Object obj;
                 UnityEditor.EditorBuildSettings.TryGetConfigObject(SettingsKey, out obj);
@@ -47,8 +47,8 @@ namespace onAirXR.Server {
             }
         }
 #else
-        public static AXRServerSettings runtimeInstance { get; private set; } = null;
-        public static AXRServerSettings instance => runtimeInstance;
+        internal static AXRServerSettings runtimeInstance { get; private set; } = null;
+        internal static AXRServerSettings instance => runtimeInstance;
 
         public void Awake() {
             if (runtimeInstance != null) { return; }
@@ -71,7 +71,7 @@ namespace onAirXR.Server {
         [SerializeField] private AXRRenderPass desiredRenderPass = AXRRenderPass.SinglePassInstanced;
         [SerializeField] private AXRTextureColorSpaceHint displayTextureColorSpaceHint = AXRTextureColorSpaceHint.None;
 
-        public string propLicense {
+        internal string propLicense {
             get {
                 if (Application.isEditor) {
                     return Path.GetFullPath("Packages/com.onairxr.server/Resources/noncommercial.license");
@@ -81,14 +81,14 @@ namespace onAirXR.Server {
             }
         }
 
-        public int propMinFrameRate => minFrameRate;
-        public int propDefaultMirrorBlitMode => (int)defaultMirrorBlitMode;
-        public int propStapPort => stapPort;
-        public int propAmpPort => ampPort;
-        public bool propLoopbackOnly => loopbackOnly;
-        public AXRRenderPass propDesiredRenderPass => advancedSettingsEnabled ? desiredRenderPass : AXRRenderPass.SinglePassInstanced;
+        internal int propMinFrameRate => minFrameRate;
+        internal int propDefaultMirrorBlitMode => (int)defaultMirrorBlitMode;
+        internal int propStapPort => stapPort;
+        internal int propAmpPort => ampPort;
+        internal bool propLoopbackOnly => loopbackOnly;
+        internal AXRRenderPass propDesiredRenderPass => advancedSettingsEnabled ? desiredRenderPass : AXRRenderPass.SinglePassInstanced;
 
-        public AXRTextureColorSpaceHint propDisplayTextureColorSpaceHint {
+        internal AXRTextureColorSpaceHint propDisplayTextureColorSpaceHint {
             get {
                 var value = advancedSettingsEnabled ? displayTextureColorSpaceHint : AXRTextureColorSpaceHint.None;
 
@@ -106,7 +106,7 @@ namespace onAirXR.Server {
             }
         }
 
-        public AXRServerSettings ParseCommandLine() {
+        internal AXRServerSettings ParseCommandLine() {
             var pairs = AXRUtils.ParseCommandLine(Environment.GetCommandLineArgs());
             if (pairs == null) { return this; }
 
@@ -186,15 +186,15 @@ namespace onAirXR.Server {
         #pragma warning restore 0414
 
 #if ONAIRXR_EXPERIMENTAL
-        public bool propCpuReadableEncodeBuffer => advancedSettingsEnabled ? cpuReadableEncodeBuffer : false;
-        public AXRCodec propCodecs => advancedSettingsEnabled ? codecs : AXRCodec.All;
-        public AXREncodingPreset propEncodingPreset => advancedSettingsEnabled ? encodingPreset : AXREncodingPreset.LowLatency;
-        public AXREncodingQuality propEncodingQuality => advancedSettingsEnabled ? encodingQuality : AXREncodingQuality.VeryHigh;
+        internal bool propCpuReadableEncodeBuffer => advancedSettingsEnabled ? cpuReadableEncodeBuffer : false;
+        internal AXRCodec propCodecs => advancedSettingsEnabled ? codecs : AXRCodec.All;
+        internal AXREncodingPreset propEncodingPreset => advancedSettingsEnabled ? encodingPreset : AXREncodingPreset.LowLatency;
+        internal AXREncodingQuality propEncodingQuality => advancedSettingsEnabled ? encodingQuality : AXREncodingQuality.VeryHigh;
 #else
-        public bool propCpuReadableEncodeBuffer => false;
-        public AXRCodec propCodecs => AXRCodec.All;
-        public AXREncodingPreset propEncodingPreset => AXREncodingPreset.LowLatency;
-        public AXREncodingQuality propEncodingQuality => AXREncodingQuality.VeryHigh;
+        internal bool propCpuReadableEncodeBuffer => false;
+        internal AXRCodec propCodecs => AXRCodec.All;
+        internal AXREncodingPreset propEncodingPreset => AXREncodingPreset.LowLatency;
+        internal AXREncodingQuality propEncodingQuality => AXREncodingQuality.VeryHigh;
 #endif
     }
 }

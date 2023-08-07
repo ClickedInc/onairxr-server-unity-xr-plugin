@@ -11,7 +11,7 @@ namespace onAirXR.Server {
 
     [Serializable]
     public class AXRPlayerConfig {
-        public AXRPlayerConfig() {
+        internal AXRPlayerConfig() {
             CameraProjection = new float[4];
         }
 
@@ -28,14 +28,15 @@ namespace onAirXR.Server {
         [SerializeField] private ulong VideoMaxBitrate;
 
         public AXRPlayerType type => Stereoscopy ? AXRPlayerType.Stereoscopic : AXRPlayerType.Monoscopic;
-        public int videoWidth => VideoWidth;
-        public int videoHeight => VideoHeight;
-        public float framerate => FrameRate;
-        public Vector3 eyeCenterPosition => EyeCenterPosition;
-        public float ipd => InterpupillaryDistance;
         public string userID => UserID;
         public string place => Place;
-        public ulong videoStartBitrate => VideoStartBitrate;
-        public ulong videoMaxBitrate => VideoMaxBitrate;
+
+        internal int videoWidth => VideoWidth;
+        internal int videoHeight => VideoHeight;
+        internal float framerate => FrameRate;
+        internal ulong videoStartBitrate => VideoStartBitrate;
+        internal ulong videoMaxBitrate => VideoMaxBitrate;
+        internal Vector3 eyeCenterPosition => EyeCenterPosition;
+        internal float ipd => InterpupillaryDistance;
     }
 }

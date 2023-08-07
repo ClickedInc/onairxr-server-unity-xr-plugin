@@ -16,71 +16,8 @@ namespace onAirXR.Server {
         TouchScreen = 4
     }
 
-    public enum AXRInputDirection : byte {
-        Up = 0,
-        Down,
-        Left,
-        Right
-    }
-
-    public enum AXRDeviceStatus : byte {
+    internal enum AXRDeviceStatus : byte {
         Unavailable = 0,
         Ready
-    }
-
-    public enum AXRHeadTrackerControl : byte {
-        Pose = 0,
-        Battery
-    }
-
-    public enum AXRHandTrackerControl : byte {
-        Status = 0,
-        Pose,
-        Battery
-    }
-
-    public enum AXRHandTrackerFeedbackControl : byte {
-        RenderOnClient = 0,
-        RaycastHit,
-        Vibration
-    }
-
-    public enum AXRControllerControl : byte {
-        Axis2DLThumbstick = 0,
-        Axis2DRThumbstick,
-        AxisLIndexTrigger,
-        AxisRIndexTrigger,
-        AxisLHandTrigger,
-        AxisRHandTrigger,
-        ButtonA,
-        ButtonB,
-        ButtonX,
-        ButtonY,
-        ButtonStart,
-        ButtonBack,
-        ButtonLThumbstick,
-        ButtonRThumbstick,
-        TouchA,
-        TouchB,
-        TouchX,
-        TouchY,
-        TouchLThumbstick,
-        TouchRThumbstick,
-        TouchLThumbRest,
-        TouchRThumbRest,
-        TouchLIndexTrigger,
-        TouchRIndexTrigger
-    }
-
-    public enum AXRTouchScreenControl : byte {
-        TouchIndexStart = 0,
-        TouchIndexEnd = 9
-    }
-
-    public enum AXRTouchPhase : byte {
-        Ended = 0,
-        Canceled,
-        Stationary,
-        Moved
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace onAirXR.Server {
     [RequireComponent(typeof(MeshFilter))]
     public class AXRVolume : MonoBehaviour {
-        public static void ClearConfiguration() {
+        internal static void ClearConfiguration() {
             AXRServerPlugin.ConfigureVolumeMesh(null);
         }
 
@@ -16,7 +16,7 @@ namespace onAirXR.Server {
         private MeshRenderer _renderer;
         private bool _configured;
 
-        public bool Configure() {
+        internal bool Configure() {
             var mesh = _meshFilter?.sharedMesh;
             if (mesh != null) {
                 AXRServerPlugin.ConfigureVolumeMesh(mesh);

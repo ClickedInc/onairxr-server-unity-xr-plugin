@@ -1,10 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-
-[assembly: InternalsVisibleTo("onAirXR.Server.Editor")]
-[assembly: InternalsVisibleTo("onAirXR.Playground")]
 
 namespace onAirXR.Server {
     public class AXRServer : MonoBehaviour {
@@ -279,7 +275,7 @@ namespace onAirXR.Server {
         }
 
         private void onProfileReportReceived(AXRServerMessage message) {
-            Debug.Log($"[onairxr] profile report = {message.Body}");
+            Debug.Log($"[onairxr] profile report : {message.Body}");
             
             foreach (var handler in _internalEventHandlers) {
                 handler.OnProfileReportReceived(message.Body);
@@ -306,8 +302,8 @@ namespace onAirXR.Server {
 
         // experimental features
 #if ONAIRXR_EXPERIMENTAL
-        public AXRVolume currentVolume { private get; set; }
-        public AXRChromaKeyCamera currentChromaKey { private get; set; }
+        internal AXRVolume currentVolume { private get; set; }
+        internal AXRChromaKeyCamera currentChromaKey { private get; set; }
 
         private void Experimental_reconfigure() {
             if (currentVolume == null) {

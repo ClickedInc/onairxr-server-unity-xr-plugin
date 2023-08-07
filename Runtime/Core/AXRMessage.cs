@@ -10,22 +10,24 @@
 using UnityEngine;
 using System;
 
-[Serializable]
-public class AXRMessage {
-    public const string TypeEvent = "Event";
-    public const string TypeUserData = "userdata";
+namespace onAirXR.Server {
+    [Serializable]
+    internal class AXRMessage {
+        public const string TypeEvent = "Event";
+        public const string TypeUserData = "userdata";
 
-    public IntPtr source { get; set; }
+        public IntPtr source { get; set; }
 
-    public string Type;
+        public string Type;
 
-    [SerializeField]
-    protected string Data;
-    public byte[] Data_Decoded { get; private set; }
+        [SerializeField]
+        protected string Data;
+        public byte[] Data_Decoded { get; private set; }
 
-    protected virtual void postParse() {
-        if (string.IsNullOrEmpty(Data) == false) {
-            Data_Decoded = Convert.FromBase64String(Data);
+        protected virtual void postParse() {
+            if (string.IsNullOrEmpty(Data) == false) {
+                Data_Decoded = Convert.FromBase64String(Data);
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ using UnityEngine.InputSystem.Layouts;
 namespace onAirXR.Server {
 #if ENABLE_VR
     [Preserve] [InputControlLayout(displayName = "onAirXR HMD")]
-    public class AXRInputDeviceLayoutHMD : XRHMD {
+    internal class AXRInputDeviceLayoutHMD : XRHMD {
         [Preserve] [InputControl]
         public new Vector3Control devicePosition { get; private set; }
 
@@ -40,7 +40,7 @@ namespace onAirXR.Server {
     }
 
     [Preserve] [InputControlLayout(displayName = "onAirXR Controller", commonUsages = new[] { "LeftHand", "RightHand" })]
-    public class AXRInputDeviceLayoutController : XRControllerWithRumble {
+    internal class AXRInputDeviceLayoutController : XRControllerWithRumble {
         [Preserve] [InputControl(aliases = new[] { "Primary2DAxis", "Joystick" })]
         public Vector2Control thumbstick { get; private set; }
 

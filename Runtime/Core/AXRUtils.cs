@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace onAirXR.Server {
-    public static class AXRUtils {
+    internal static class AXRUtils {
         public static Dictionary<string, string> ParseCommandLine(string[] args) {
             if (args == null) { return null; }
 

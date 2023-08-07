@@ -13,18 +13,13 @@ namespace onAirXR.Server {
         private InputDeviceCharacteristics leftControllerCharacteristics => InputDeviceCharacteristics.Left | InputDeviceCharacteristics.HeldInHand | InputDeviceCharacteristics.Controller;
         private InputDeviceCharacteristics rightControllerCharacteristics => InputDeviceCharacteristics.Right | InputDeviceCharacteristics.HeldInHand | InputDeviceCharacteristics.Controller;
 
-        public AXRServerInput() {
+        internal AXRServerInput() {
             InputDevices.GetDevicesWithCharacteristics(mainCharacteristics, _inputMain);
             InputDevices.GetDevicesWithCharacteristics(leftControllerCharacteristics, _inputLeftController);
             InputDevices.GetDevicesWithCharacteristics(rightControllerCharacteristics, _inputRightController);
 
             InputDevices.deviceConnected += onInputDeviceConnected;
             InputDevices.deviceDisconnected += onInputDeviceDisconnected;
-        }
-
-        public void Cleanup() {
-            InputDevices.deviceConnected -= onInputDeviceConnected;
-            InputDevices.deviceDisconnected -= onInputDeviceDisconnected;
         }
 
         public bool IsDeviceConnected(AXRInputDeviceID device) {
@@ -104,6 +99,11 @@ namespace onAirXR.Server {
                 default:
                     return false;
             }
+        }
+
+        internal void Cleanup() {
+            InputDevices.deviceConnected -= onInputDeviceConnected;
+            InputDevices.deviceDisconnected -= onInputDeviceDisconnected;
         }
 
         private void onInputDeviceConnected(InputDevice device) {

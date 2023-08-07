@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace onAirXR.Server {
+namespace onAirXR.Server.Editor {
     [CustomEditor(typeof(AXRServerSettings))]
     public class AXRServerSettingsEditor : UnityEditor.Editor {
         private SerializedProperty _propLicense;

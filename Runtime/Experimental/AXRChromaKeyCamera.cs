@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace onAirXR.Server {
     public class AXRChromaKeyCamera : MonoBehaviour {
-        public static void ClearConfiguration() {
+        internal static void ClearConfiguration() {
             AXRServerPlugin.UpdateChromaKeyProps(0, 0, 0, 0, 0, 0);
         }
 

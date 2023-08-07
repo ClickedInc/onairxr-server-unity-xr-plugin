@@ -35,7 +35,7 @@ namespace onAirXR.Server {
         }
     }
 
-    public class AXRCameraFadeRenderPass : ScriptableRenderPass {
+    internal class AXRCameraFadeRenderPass : ScriptableRenderPass {
         private AXRCameraFade _fade;
 
         public AXRCameraFadeRenderPass(AXRCameraFade fade) {
