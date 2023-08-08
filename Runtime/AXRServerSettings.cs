@@ -26,7 +26,7 @@ namespace onAirXR.Server {
     }
 
     [Serializable]
-    [XRConfigurationData("onAirXR Server", SettingsKey)]
+    [XRConfigurationData("onAirXR", SettingsKey)]
     public class AXRServerSettings : ScriptableObject {
         internal const string SettingsKey = "com.onairxr.server.settings";
 

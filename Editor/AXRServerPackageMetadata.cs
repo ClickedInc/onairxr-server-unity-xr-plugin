@@ -19,7 +19,7 @@ namespace onAirXR.Server.Editor {
         }
 
         private class AXRServerPackageMetadata : IXRPackageMetadata {
-            public string packageName => "onAirXR Server XR Plugin";
+            public string packageName => "onAirXR";
             public string packageId => "com.onairxr.server";
             public string settingsType => "onAirXR.Server.AXRServerSettings";
 
@@ -28,7 +28,7 @@ namespace onAirXR.Server.Editor {
         }
 
         private class AXRServerLoaderMetadata : IXRLoaderMetadata {
-            public string loaderName => "onAirXR Server";
+            public string loaderName => "onAirXR";
             public string loaderType => "onAirXR.Server.AXRServerLoader";
 
             private static readonly List<BuildTargetGroup> _supportedBuildTargets = new List<BuildTargetGroup>() { BuildTargetGroup.Standalone };
