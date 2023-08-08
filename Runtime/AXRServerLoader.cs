@@ -59,7 +59,9 @@ namespace onAirXR.Server {
 
         public override bool Start() {
             var settings = AXRServerSettings.instance;
-            AXRServer.instance.Reconfigure(settings);
+            if (AXRServer.instance != null) {
+                AXRServer.instance.Reconfigure(settings);
+            }
 
             StartSubsystem<XRDisplaySubsystem>();
             StartSubsystem<XRInputSubsystem>();

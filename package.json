@@ -2,7 +2,7 @@
     "name": "com.onairxr.server",
     "version": "3.1.0",
     "displayName": "onAirXR",
-    "description": "",
+    "description": "onAirXR™is a high-speed streaming solution for game engines that supports VR and AR multi-platform streaming.",
     "unity": "2020.3",
     "author": {
         "name": "Clicked, Inc.",
@@ -17,5 +17,8 @@
     ],
     "dependencies": {
         "com.unity.xr.management": "4.2.0"
-    }
+    },
+    "documentationUrl": "https://clickedcorp.notion.site/onAirXR-Unity-XR-Plugin-User-Guide-64af3154423b4ec28cb8e394b9b0e06b?pvs=4",
+    "changelogUrl": "https://clickedcorp.notion.site/onAirXR-Unity-XR-Plugin-User-Guide-64af3154423b4ec28cb8e394b9b0e06b?pvs=4",
+    "licensesUrl": "https://clickedcorp.notion.site/onAirXR-Unity-XR-Plugin-User-Guide-64af3154423b4ec28cb8e394b9b0e06b?pvs=4"
 }

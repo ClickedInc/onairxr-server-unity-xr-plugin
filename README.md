@@ -21,8 +21,8 @@ To install onAirXR Unity XR Plugin, just add the following git URL into Unity Pa
 
 ## User Guide
 
-You can check the user guide at the link below.<br>
-[https://fire-diamond-de8.notion.site/onAirXR-Unity-XR-Plugin-User-Guide-76f5897f99ec4a1bb3554cdf90e0c499](https://fire-diamond-de8.notion.site/onAirXR-Unity-XR-Plugin-User-Guide-76f5897f99ec4a1bb3554cdf90e0c499)
+You can see the user guide at the link below.<br>
+[https://https://clickedcorp.notion.site/onAirXR-Unity-XR-Plugin-User-Guide-64af3154423b4ec28cb8e394b9b0e06b?pvs=4](https://clickedcorp.notion.site/onAirXR-Unity-XR-Plugin-User-Guide-64af3154423b4ec28cb8e394b9b0e06b?pvs=4)
 
 ## License
 

@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace onAirXR.Server {
     public class AXRServer : MonoBehaviour {
@@ -23,8 +25,13 @@ namespace onAirXR.Server {
 
         public static AXRServer instance { get; private set; }
 
-        internal static void LoadOnce() {
+        internal static async void LoadOnce() {
             if (instance != null) { return; }
+
+            // NOTE: wait until the first scene is loaded to avoid AXRServer from being destroyed.
+            if (Application.isEditor == false &&  SceneManager.GetActiveScene().isLoaded == false) {
+                await Task.Yield();
+            }
 
             var go = new GameObject("AXRServer");
             go.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector;
@@ -154,14 +161,17 @@ namespace onAirXR.Server {
             configure(settings);
             var ret = AXRServerPlugin.Startup(settings.propLicense, settings.propStapPort, settings.propAmpPort, settings.propLoopbackOnly);
             if (ret != 0) {
-                var reason = ret == -1 ? "not verified yet" :
-                             ret == -2 ? "file not found" :
+                var reason = ret == -1 ? "license not verified yet" :
+                             ret == -2 ? "license file not found" :
                              ret == -3 ? "invalid license" :
                              ret == -4 ? "license expired" :
                                          $"system error (code = {ret})";
 
-                Debug.LogError($"[onAirXR Server] failed to start up server: code = {reason}");
+                Debug.LogError($"[onAirXR] failed to start up server: {reason}");
+                return;
             }
+
+            Debug.Log($"[onAirXR] server started up at port {settings.propStapPort}");
         }
 
         private void Update() {
