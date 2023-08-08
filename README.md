@@ -17,12 +17,12 @@ This Unity package is designed for developing the content server app. For the st
 ## Install
 
 To install onAirXR Unity XR Plugin, just add the following git URL into Unity Package Manager.
-- [https://github.com/ClickedInc/onairxr-server-unity-xr-plugin.git#3.0.3](https://github.com/ClickedInc/onairxr-server-unity-xr-plugin/releases/tag/3.0.3)
+- [https://github.com/ClickedInc/onairxr-server-unity-xr-plugin.git#3.1.0](https://github.com/ClickedInc/onairxr-server-unity-xr-plugin/releases/tag/3.1.0)
 
 ## User Guide
 
 You can see the user guide at the link below.<br>
-[https://https://clickedcorp.notion.site/onAirXR-Unity-XR-Plugin-User-Guide-64af3154423b4ec28cb8e394b9b0e06b?pvs=4](https://clickedcorp.notion.site/onAirXR-Unity-XR-Plugin-User-Guide-64af3154423b4ec28cb8e394b9b0e06b?pvs=4)
+[https://clickedcorp.notion.site/onAirXR-Unity-XR-Plugin-User-Guide-64af3154423b4ec28cb8e394b9b0e06b?pvs=4](https://clickedcorp.notion.site/onAirXR-Unity-XR-Plugin-User-Guide-64af3154423b4ec28cb8e394b9b0e06b?pvs=4)
 
 ## License
 
