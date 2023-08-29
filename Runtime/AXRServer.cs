@@ -87,8 +87,6 @@ namespace onAirXR.Server {
 
         internal void Reconfigure(AXRServerSettings settings) {
             configure(settings);
-
-            Experimental_reconfigure();
         }
 
         internal void RequestConfigureSession(ulong minBitrate, ulong startBitrate, ulong maxBitrate) {
@@ -309,22 +307,5 @@ namespace onAirXR.Server {
                 _currentAudioListener = audioListener.gameObject.AddComponent<AXRAudioListener>();
             }
         }
-
-        // experimental features
-#if ONAIRXR_EXPERIMENTAL
-        internal AXRVolume currentVolume { private get; set; }
-        internal AXRChromaKeyCamera currentChromaKey { private get; set; }
-
-        private void Experimental_reconfigure() {
-            if (currentVolume == null) {
-                AXRVolume.ClearConfiguration();
-            }
-            if (currentChromaKey == null) {
-                AXRChromaKeyCamera.ClearConfiguration();
-            }
-        }
-#else
-        private void Experimental_reconfigure() {}
-#endif
     }
 }

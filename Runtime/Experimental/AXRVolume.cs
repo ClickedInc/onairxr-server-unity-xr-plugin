@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 #if ONAIRXR_EXPERIMENTAL
@@ -7,28 +8,15 @@ using UnityEngine;
 namespace onAirXR.Server {
     [RequireComponent(typeof(MeshFilter))]
     public class AXRVolume : MonoBehaviour {
-        internal static void ClearConfiguration() {
-            AXRServerPlugin.ConfigureVolumeMesh(null);
-        }
-
         private Transform _thisTransform;
         private MeshFilter _meshFilter;
         private MeshRenderer _renderer;
+        private Transform _cameraSpace;
         private bool _configured;
 
-        internal bool Configure() {
-            var mesh = _meshFilter?.sharedMesh;
-            if (mesh != null) {
-                AXRServerPlugin.ConfigureVolumeMesh(mesh);
-            }
-
-            _configured = mesh != null;
-            return _configured;
-        }
+        [SerializeField] private Camera _camera = null;
 
         private void Awake() {
-            AXRServer.instance.currentVolume = this;
-
             _thisTransform = transform;
             _meshFilter = GetComponent<MeshFilter>();
             _renderer = GetComponent<MeshRenderer>();
@@ -50,15 +38,50 @@ namespace onAirXR.Server {
                 _renderer.enabled = false;
             }
 
-            Configure();
+            configure();
         }
 
         private void Update() {
             if (_configured == false) { return; }
 
-            AXRServerPlugin.UpdateVolumeInfo(_thisTransform.position.x, _thisTransform.position.y, _thisTransform.position.z,
-                                             _thisTransform.rotation.x, _thisTransform.rotation.y, _thisTransform.rotation.z, _thisTransform.rotation.w,
+            _cameraSpace = findCameraSpace();
+
+            var position = _cameraSpace != null ? _cameraSpace.InverseTransformPoint(_thisTransform.position) : _thisTransform.position;
+            var rotation = _cameraSpace != null ? Quaternion.Inverse(_cameraSpace.rotation) * _thisTransform.rotation : _thisTransform.rotation;
+
+            AXRServerPlugin.UpdateVolumeInfo(position.x, position.y, position.z,
+                                             rotation.x, rotation.y, rotation.z, rotation.w,
                                              _thisTransform.lossyScale.x, _thisTransform.lossyScale.y, _thisTransform.lossyScale.z);
+        }
+
+        private void OnDestroy() {
+            AXRServerPlugin.ConfigureVolumeMesh(null);
+        }
+
+        private void configure() {
+            var mesh = _meshFilter?.sharedMesh;
+            if (mesh != null) {
+                AXRServerPlugin.ConfigureVolumeMesh(mesh);
+            }
+
+            _configured = mesh != null;
+        }
+
+        private Transform findCameraSpace() {
+            if (_cameraSpace != null && _cameraSpace.gameObject.activeInHierarchy) {
+                return _cameraSpace;
+            }
+
+            if (_camera != null && _camera.gameObject.activeInHierarchy) {
+                return _camera.transform.parent;
+            }
+
+            var camera = Camera.main;
+            if (camera != null && camera.gameObject.activeInHierarchy) {
+                return camera.transform.parent;
+            }
+
+            return null;
         }
     }
 }
