@@ -35,8 +35,15 @@ namespace onAirXR.Server {
             if (_renderer != null) {
                 _renderer.enabled = false;
             }
+        }
 
+        private void OnEnable() {
             configure();
+        }
+
+        private void OnDisable() {
+            AXRServerPlugin.ConfigureVolumeMesh(null);
+            _configured = false;
         }
 
         private void Update() {
@@ -50,10 +57,6 @@ namespace onAirXR.Server {
             AXRServerPlugin.UpdateVolumeInfo(position.x, position.y, position.z,
                                              rotation.x, rotation.y, rotation.z, rotation.w,
                                              _thisTransform.lossyScale.x, _thisTransform.lossyScale.y, _thisTransform.lossyScale.z);
-        }
-
-        private void OnDestroy() {
-            AXRServerPlugin.ConfigureVolumeMesh(null);
         }
 
         private void configure() {
