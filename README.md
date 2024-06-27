@@ -17,7 +17,7 @@ This Unity package is designed for developing the content server app. For the st
 ## Install
 
 To install onAirXR Unity XR Plugin, just add the following git URL into Unity Package Manager.
-- [https://github.com/ClickedInc/onairxr-server-unity-xr-plugin.git#3.1.1](https://github.com/ClickedInc/onairxr-server-unity-xr-plugin/releases/tag/3.1.1)
+- [https://github.com/ClickedInc/onairxr-server-unity-xr-plugin.git#3.1.2](https://github.com/ClickedInc/onairxr-server-unity-xr-plugin/releases/tag/3.1.2)
 
 ## User Guide
 
@@ -28,7 +28,7 @@ You can see the user guide at the link below.<br>
 
 onAirXR Unity XR Plugin is [MIT licensed](https://github.com/ClickedInc/onairxr-server-unity-xr-plugin/blob/main/LICENSE).
 
-It also contains our own [license file](https://github.com/ClickedInc/onairxr-server-unity-xr-plugin/blob/main/Resources/noncommercial.license) for security. This license comes with an expiration date and we regularly update to ensure the most recent one never expires. Note that the current license is valid until 2023-12-31.
+It also contains our own [license file](https://github.com/ClickedInc/onairxr-server-unity-xr-plugin/blob/main/Resources/noncommercial.license) for security. This license comes with an expiration date and we regularly update to ensure the most recent one never expires. Note that the current license is valid until 2024-12-31.
 
 ## Contact
 * Website : [https://www.clicked.co.kr](https://www.clicked.co.kr)
